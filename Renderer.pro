@@ -27,25 +27,31 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        model.cpp \
+        model/basemodel.cpp \
+        model/model.cpp \
         render/renderer.cpp \
-        renderwidget.cpp
+        renderwidget.cpp \
+        view/camera.cpp \
+        view/perspective.cpp \
+        view/viewport.cpp
 
 HEADERS += \
-        geometry.h \
-        geometry.hpp \
         geometry/geometry.h \
         geometry/geometry.hpp \
-        geometry/mathpoint.h \
-        geometry/mathpoint.hpp \
         geometry/mathvector.h \
         geometry/mathvector.hpp \
         geometry/matrix.h \
         geometry/matrix.hpp \
+        geometry/point.h \
+        geometry/point.hpp \
         mainwindow.h \
-        model.h \
+        model/basemodel.h \
+        model/model.h \
         render/renderer.h \
-        renderwidget.h
+        renderwidget.h \
+        view/camera.h \
+        view/perspective.h \
+        view/viewport.h
 
 FORMS += \
         mainwindow.ui

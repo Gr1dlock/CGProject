@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_HPP
 #define GEOMETRY_HPP
 
-#include "mathpoint.hpp"
+#include "point.hpp"
 #include "mathvector.hpp"
 #include "matrix.hpp"
 

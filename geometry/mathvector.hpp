@@ -7,35 +7,24 @@
 namespace GeometrySpace
 {
     template <typename T>
-    template <typename U>
-    MathVector<T>::MathVector(const MathVector<U> &other)
-        : length(other.size())
+    MathVector<T>::MathVector()
+        : length(0)
+    {
+        data = nullptr;
+    }
+
+    template <typename T>
+    MathVector<T>::MathVector(const int &count)
+        : length(count)
     {
         try
         {
             data = new T[length];
-            if (std::is_same<T, int>::value && std::is_same<U, double>::value)
-            {
-                for (int i = 0; i < length; i++)
-                    data[i] = static_cast<int>(round(other[i]));
-            }
-            else
-            {
-                for (int i = 0; i < length; i++)
-                    data[i] = other[i];
-            }
         }
         catch (std::bad_alloc)
         {
             throw "Allocation error";
         }
-    }
-
-    template <typename T>
-    MathVector<T>::MathVector()
-        : length(0)
-    {
-        data = nullptr;
     }
 
     template<typename T>
@@ -132,6 +121,28 @@ namespace GeometrySpace
     }
 
     template <typename T>
+    template <int size_T>
+    MathVector<T> &MathVector<T>::operator = (const Point<size_T, T> &other)
+    {
+        try
+        {
+            if (size_T != length)
+            {
+                delete [] data;
+                length = size_T;
+                data = new T[length];
+            }
+            for (int i = 0; i < size_T; i++)
+                data[i] = other[i];
+        }
+        catch(std::bad_alloc)
+        {
+            throw "Allocation error";
+        }
+        return *this;
+    }
+
+    template <typename T>
     MathVector<T> &MathVector<T>::operator = (std::initializer_list<T> list)
     {
         try
@@ -156,7 +167,6 @@ namespace GeometrySpace
     MathVector<T>::~MathVector()
     {
         delete [] data;
-        length = 0;
     }
 
     template<typename T>
@@ -230,24 +240,15 @@ namespace GeometrySpace
     }
 
     template <typename T>
-    template <typename U>
-    MathVector<T>::MathVector(const Point3D<U> &other)
-        : length(3)
+    template <int size_T>
+    MathVector<T>::MathVector(const Point<size_T, T> &other)
+        : length(size_T)
     {
         try
         {
             data = new T[length];
-            if (std::is_same<T, int>::value && std::is_same<U, double>::value)
-            {
-                for (int i = 0; i < 3; i++)
-                    data[i] = static_cast<int>(round(other[i]));
-            }
-            else
-            {
-                for (int i = 0; i < 3; i++)
-                    data[i] = other[i];
-            }
-
+            for (int i = 0; i < size_T; i++)
+                data[i] = other[i];
         }
         catch (std::bad_alloc)
         {

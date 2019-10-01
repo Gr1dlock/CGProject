@@ -13,17 +13,18 @@ namespace GeometrySpace
         T *data;
     public:
         MathVector();
+        MathVector(const int &count);
         MathVector(const T &x, const T &y, const T &z);
         MathVector(const T &x, const T &y, const T &z, const T &w);
         MathVector(const MathVector<T> &other);
         MathVector(std::initializer_list <T> list);
-        template <typename U>
-        MathVector(const Point3D<U> &point);
-        template <typename U>
-        MathVector(const MathVector<U> &other);
+        template <int size_T>
+        MathVector(const Point<size_T, T> &point);
 
         ~MathVector();
 
+        template <int size_T>
+        MathVector<T> &operator = (const Point<size_T, T> &point);
         MathVector<T> &operator = (const MathVector<T> &other);
         MathVector<T> &operator = (std::initializer_list <T> list);
 

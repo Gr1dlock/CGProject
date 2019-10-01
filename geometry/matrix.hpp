@@ -27,15 +27,15 @@ namespace GeometrySpace
 
     template <typename T>
     Matrix<T>::Matrix(const MathVector<T> &other)
-        : _rows(other.size()), _cols(1)
+        : _rows(1), _cols(other.size())
     {
         try
         {
-            data = new T* [_rows];
-            for (int i = 0; i < _rows; i++)
+            data = new T*[1];
+            data[0] = new T[_cols];
+            for (int i = 0; i < _cols; i++)
             {
-                data[i] = new T[_cols];
-                data[i][0] = other[i];
+                data[0][i] = other[i];
             }
         }
         catch (std::bad_alloc)
@@ -73,7 +73,6 @@ namespace GeometrySpace
         }
         delete [] data;
     }
-
 
     template <typename T>
     void Matrix<T>::makeIdentity()
@@ -115,6 +114,28 @@ namespace GeometrySpace
 
     template <typename T>
     Matrix<T> Matrix<T>::operator * (const Matrix &other)
+    {
+        if (_cols == other.countRows())
+        {
+            Matrix result(_rows, _cols);
+            for (int i = 0; i < _rows; i++)
+            {
+                for (int j = 0; j < other.countCols(); j++)
+                {
+                    for (int k = 0; k < _cols; k++)
+                    {
+                        result[i][j] += (*this)[i][k] * other[k][j];
+                    }
+                }
+            }
+            return result;
+        }
+        else
+            throw "Incompatible sizes of the matrices";
+    }
+
+    template <typename T>
+    Matrix<T> Matrix<T>::operator * (const Matrix &other) const
     {
         if (_cols == other.countRows())
         {
@@ -225,6 +246,51 @@ namespace GeometrySpace
             throw "Not a square matrix";
     }
 
+    template <typename T>
+    bool Matrix<T>::isZero()
+    {
+        for (int i = 0; i < _rows; i++)
+        {
+            for (int j = 0; j < _cols; j++)
+            {
+                if (data[i][j] != 0)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    template <typename T>
+    Matrix<T> Matrix<T>::operator = (const Matrix &other)
+    {
+        if (this == &other) return *this;
+        try
+        {
+            if (other._rows != _rows || other._cols != _cols)
+            {
+                for (int i = 0; i < _rows; i++)
+                {
+                    delete [] data[i];
+                }
+                delete [] data;
+                _rows = other._rows;
+                _cols = other._cols;
+                data = new T* [_rows];
+            }
+            for (int i = 0; i < _rows; i++)
+            {
+                data[i] = new T[_cols];
+                for (int j = 0; j < _cols; j++)
+                    data[i][j] = other[i][j];
+            }
+
+        }
+        catch(std::bad_alloc)
+        {
+            throw "Allocation error";
+        }
+        return *this;
+    }
 }
 
 

@@ -11,11 +11,8 @@ namespace GeometrySpace
     template<typename T>
     class MathVector;
 
-    template<typename T>
-    class Point2D;
-
-    template<typename T>
-    class Point3D;
+    template<int size, typename T>
+    class Point;
 
     template<typename T>
     class Matrix;

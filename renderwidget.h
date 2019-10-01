@@ -5,6 +5,8 @@
 #include <QPainter>
 
 #include "geometry/geometry.hpp"
+#include "render/renderer.h"
+#include "model/model.h"
 
 using namespace GeometrySpace;
 
@@ -13,7 +15,7 @@ class RenderWidget : public QWidget
     Q_OBJECT
 public:
     explicit RenderWidget(QWidget *parent = nullptr);
-    void renderTriangle(QColor color, const Point2D<int> *triangle);
+    void renderModel(QColor color, const BaseModel &model);
 protected:
     void paintEvent(QPaintEvent *event);
 
