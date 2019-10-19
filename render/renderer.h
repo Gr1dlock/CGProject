@@ -21,6 +21,7 @@ private:
     ViewPort view_port;
     Camera camera;
     Perspective perspective;
+    std::vector<std::vector<double>> depth_buffer;
 };
 
 #endif // RENDERER_H

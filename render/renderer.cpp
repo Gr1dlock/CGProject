@@ -8,8 +8,6 @@ Renderer::Renderer()
 void Renderer::renderTriangle(QPainter *painter, std::vector<Point<3, double>> &triangle)
 {
     Matrix<double> MVP(camera.lookAt() * perspective.perspectiveProjection());
-    for (int i = 0; i < 4; i++)
-        qDebug() << MVP[i][0] << MVP[i][1] << MVP[i][2] << MVP[i][3];
     for (int i = 0; i < 3; i++)
     {
         Point<4, double> tmp(triangle[i]);

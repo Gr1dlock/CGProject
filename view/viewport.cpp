@@ -12,5 +12,5 @@ ViewPort::ViewPort(const int &screen_width, const int &screen_height)
 void ViewPort::toScreen(Point<3, double> &point)
 {
     point.setX(round((point.x() + 1) * 0.5 * width));
-    point.setY(round((point.y() + 1) * 0.5 * height));
+    point.setY(round(height - (point.y() + 1) * 0.5 * height));
 }
