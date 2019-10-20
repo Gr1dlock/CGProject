@@ -14,6 +14,13 @@ void ModelManager::addModel(const Cube &model)
     rotations.push_back(rotation);
 }
 
+void ModelManager::deleteModel(const int &index)
+{
+    models.erase(models.begin() + index);
+    translations.erase(translations.begin() + index);
+    rotations.erase(rotations.begin() + index);
+}
+
 void ModelManager::rotateByX(const double &angle, const int &index)
 {
     double rad = angle * M_PI / 180;

@@ -10,6 +10,7 @@ public:
     inline int countModels() const { return models.size(); }
     inline Cube getModel(const int &index) const { return models[index]; }
     void addModel(const Cube &model);
+    void deleteModel(const int &index);
     void rotateByX(const double &angle, const int &index);
     void rotateByY(const double &angle, const int &index);
     void rotateByZ(const double &angle, const int &index);

@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include "geometry.h"
+#include <iostream>
 
 namespace GeometrySpace
 {

@@ -2,6 +2,7 @@
 #define MATHVECTOR_H
 
 #include "geometry.h"
+#include <iostream>
 
 namespace GeometrySpace
 {
