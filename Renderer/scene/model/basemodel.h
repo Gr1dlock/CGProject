@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "geometry/geometry.hpp"
+#include "color/color.h"
 
 using namespace GeometrySpace;
 
@@ -18,12 +19,15 @@ public:
     virtual void changeTopLength(const double &length) = 0;
     virtual void changeBotLength(const double &length) = 0;
     virtual void changeHeight(const double &height) = 0;
-
+    inline bool isOpaque() const { return fabs(color.getAlpha() - 1) < EPS; }
 protected:
     std::vector<Point<3, double>> vertices;
     std::vector<int> triangles;
     virtual void computeVertices(const int &verts, const double &length_top,const double &length_bot, const double &height) = 0;
     virtual void computeTriangles(const int &verts) = 0;
+    Color color;
+    float diffuse;
+    float specular;
 };
 
 #endif // BASEMODEL_H

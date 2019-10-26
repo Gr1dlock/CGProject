@@ -6,7 +6,7 @@ RenderWidget::RenderWidget(QWidget *parent) : QWidget(parent)
     widget_width = 960;
     widget_height = 960;
     image = new QImage(widget_width, widget_height, QImage::Format_RGB32);
-    image->fill(Qt::black);
+    scene_manager = SceneManager(image, widget_width, widget_height);
     setGeometry(10, 10, widget_width, widget_height);
 }
 

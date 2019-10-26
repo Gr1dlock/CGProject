@@ -5,6 +5,7 @@
 #include <QPainter>
 
 #include "geometry/geometry.hpp"
+#include "scene/scenemanager.h"
 
 using namespace GeometrySpace;
 
@@ -18,6 +19,7 @@ protected:
 
 private:
     QImage *image;
+    SceneManager scene_manager;
     int widget_height;
     int widget_width;
 };

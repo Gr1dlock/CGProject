@@ -10,7 +10,6 @@ public:
     inline void setCamera(const Camera &cam) { camera = cam; }
 //    void yaw();
 //    void pitch();
-//    void raw();
 //    void move();
     Matrix<double> getLookAt();
     Matrix<double> getProjection();
