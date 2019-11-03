@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPainter>
+#include <QPaintEvent>
 
 #include "geometry/geometry.hpp"
 #include "scene/scenemanager.h"
@@ -14,14 +15,23 @@ class RenderWidget : public QWidget
     Q_OBJECT
 public:
     explicit RenderWidget(QWidget *parent = nullptr);
+
 protected:
-    void paintEvent(QPaintEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
     QImage *image;
-    SceneManager scene_manager;
-    int widget_height;
-    int widget_width;
+    SceneManager sceneManager;
+    int widgetHeight;
+    int widgetWidth;
+    QPointF curPosition;
+    CameraMovement cameraMoving;
+    bool cameraRotating;
 };
 
 #endif // RENDERWIDGET_H

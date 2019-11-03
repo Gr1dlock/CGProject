@@ -38,7 +38,7 @@ namespace GeometrySpace
         const T &operator [] (const int &index) const;
 
         double module() const;
-        void normalise();
+        void normalize();
 
         int size() const { return length; }
     };

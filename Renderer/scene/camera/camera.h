@@ -3,6 +3,8 @@
 
 #include "geometry/geometry.hpp"
 
+using namespace GeometrySpace;
+
 struct ViewFrustrum
 {
     double field_of_view;
@@ -11,29 +13,28 @@ struct ViewFrustrum
     double aspect_ratio;
 };
 
-using namespace GeometrySpace;
-
 class Camera
 {
 public:
     Camera();
-    Camera(const Point<3, double> &eye, const Point<3, double> &center, const MathVector<double> &top, const ViewFrustrum &frust);
-    inline void setPosition(const Point<3, double> &point) { position = point; }
-    inline void setDirection(const MathVector<double> &vect) { direction = vect; }
-    inline void setUp(const MathVector<double> &vect) { up = vect; }
-    inline void setRight(const MathVector<double> &vect) { right = vect; }
-    inline void setViewFrustrum(const ViewFrustrum &frust) { frustrum = frust; }
-    inline Point<3, double> getPosition() const { return position; }
-    inline MathVector<double> getDirection() const { return direction; }
-    inline MathVector<double> getUp() const { return up; }
-    inline MathVector<double> getRight() const{ return right; }
-    inline ViewFrustrum getViewFrustrum() const{ return frustrum; }
+    Camera(const Point<3, double> &position, const MathVector<double> &direction, const MathVector<double> &up,
+           const MathVector<double> &right, const ViewFrustrum &frustrum);
+    inline void setPosition(const Point<3, double> &position) { position_ = position; }
+    inline void setDirection(const MathVector<double> &direction) { direction_ = direction; }
+    inline void setUp(const MathVector<double> &up) { up_ = up; }
+    inline void setRight(const MathVector<double> &right) { right_ = right; }
+    inline void setViewFrustrum(const ViewFrustrum &frustrum) { frustrum_ = frustrum; }
+    inline Point<3, double> getPosition() const { return position_; }
+    inline MathVector<double> getDirection() const { return direction_; }
+    inline MathVector<double> getUp() const { return up_; }
+    inline MathVector<double> getRight() const{ return right_; }
+    inline ViewFrustrum getViewFrustrum() const{ return frustrum_; }
 private:
-    Point<3, double> position;
-    MathVector<double> direction;
-    MathVector<double> up;
-    MathVector<double> right;
-    ViewFrustrum frustrum;
+    Point<3, double> position_;
+    MathVector<double> direction_;
+    MathVector<double> up_;
+    MathVector<double> right_;
+    ViewFrustrum frustrum_;
 };
 
 

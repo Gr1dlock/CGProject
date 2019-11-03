@@ -72,20 +72,70 @@ namespace GeometrySpace
     }
 
     template<int size, typename T>
-    Point<size, T> Point<size, T>::operator + (const Point<size, T> &v) const
+    Point<size, T> Point<size, T>::operator + (const Point<size, T> &other) const
     {
         Point result(*this);
-        for (int i = 0; i < 3; i++)
-            result[i] += v[i];
+        for (int i = 0; i < size; i++)
+            result[i] += other[i];
         return result;
     }
 
     template<int size, typename T>
-    Point<size, T> Point<size, T>::operator - (const Point<size, T> &v) const
+    Point<size, T> Point<size, T>::operator - (const Point<size, T> &other) const
     {
         Point result(*this);
-        for (int i = 0; i < 3; i++)
-            result[i] -= v[i];
+        for (int i = 0; i < size; i++)
+            result[i] -= other[i];
+        return result;
+    }
+
+    template<int size, typename T>
+    Point<size, T> Point<size, T>::operator + (const MathVector<T> &other) const
+    {
+        Point result(*this);
+        for (int i = 0; i < size; i++)
+            result[i] += other[i];
+        return result;
+    }
+
+    template<int size, typename T>
+    Point<size, T> &Point<size, T>::operator += (const Point<size, T> &other)
+    {
+        for (int i = 0; i < size; i++)
+            data[i] += other[i];
+        return *this;
+    }
+
+    template<int size, typename T>
+    Point<size, T> &Point<size, T>::operator -= (const Point<size, T> &other)
+    {
+        for (int i = 0; i < size; i++)
+            data[i] -= other[i];
+        return *this;
+    }
+
+    template<int size, typename T>
+    Point<size, T> &Point<size, T>::operator += (const MathVector<T> &other)
+    {
+        for (int i = 0; i < size; i++)
+            data[i] += other[i];
+        return *this;
+    }
+
+    template<int size, typename T>
+    Point<size, T> &Point<size, T>::operator -= (const MathVector<T> &other)
+    {
+        for (int i = 0; i < size; i++)
+            data[i] -= other[i];
+        return *this;
+    }
+
+    template<int size, typename T>
+    Point<size, T> Point<size, T>::operator - (const MathVector<T> &other) const
+    {
+        Point result(*this);
+        for (int i = 0; i < size; i++)
+            result[i] -= other[i];
         return result;
     }
 
@@ -103,8 +153,7 @@ namespace GeometrySpace
     {
         if (index < size)
             return data[index];
-        else
-            throw std::out_of_range("Index out of range");
+        throw std::out_of_range("Index out of range");
     }
 
     template<int size, typename T>
@@ -112,22 +161,13 @@ namespace GeometrySpace
     {
         if (index < size)
             return data[index];
-        else
-            throw std::out_of_range("Index out of range");
+        throw std::out_of_range("Index out of range");
     }
 
     template<int size, typename T>
     Point<size, T>::~Point()
     {
         delete [] data;
-    }
-
-    template<int size, typename T>
-    Point<size, T> &Point<size, T>::operator = (const Point<size, T> &other) const
-    {
-        for (int i = 0; i < size; i++)
-            data[i] = other[i];
-        return *this;
     }
 
     template<int size, typename T>
@@ -139,28 +179,11 @@ namespace GeometrySpace
     }
 
     template<int size, typename T>
-    Point<size, T> &Point<size, T>::operator = (const Point<size - 1, T> &other) const
-    {
-        for (int i = 0; i < size - 1; i++)
-            data[i] = other[i];
-        data[size - 1] = 1;
-        return *this;
-    }
-
-    template<int size, typename T>
     Point<size, T> &Point<size, T>::operator = (const Point<size - 1, T> &other)
     {
         for (int i = 0; i < size - 1; i++)
             data[i] = other[i];
         data[size - 1] = 1;
-        return *this;
-    }
-
-    template<int size, typename T>
-    Point<size, T> &Point<size, T>::operator = (const Point<size + 1, T> &other) const
-    {
-        for (int i = 0; i < size; i++)
-            data[i] = other[i] / other[size];
         return *this;
     }
 
@@ -188,7 +211,7 @@ namespace GeometrySpace
             }
             return result;
         }
-        else if (size == other.countRows() - 1 && size == other.countCols() - 1)
+        if (size == other.countRows() - 1 && size == other.countCols() - 1)
         {
             Point<size, T> result;
             for (int i = 0; i < size; i++)
@@ -202,10 +225,8 @@ namespace GeometrySpace
             }
             return result;
         }
-        else
-        {
-            throw ("Index out of range");
-        }
+        throw ("Index out of range");
+
     }
 }
 #endif // POINT_HPP

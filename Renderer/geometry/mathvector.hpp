@@ -204,8 +204,8 @@ namespace GeometrySpace
             return data[index];
         }
 
-        else
-            throw std::out_of_range("Index out of range");
+
+        throw std::out_of_range("Index out of range");
     }
 
     template<typename T>
@@ -216,8 +216,8 @@ namespace GeometrySpace
             return data[index];
         }
 
-        else
-            throw std::out_of_range("Index out of range");
+
+        throw std::out_of_range("Index out of range");
     }
 
     template<typename T>
@@ -268,7 +268,7 @@ namespace GeometrySpace
     }
 
     template <typename T>
-    void MathVector<T>::normalise()
+    void MathVector<T>::normalize()
     {
         double mod = module();
         for (int i = 0; i < 3; i++)

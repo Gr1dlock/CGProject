@@ -10,22 +10,25 @@ class SceneManager
 {
 public:
     SceneManager();
-    SceneManager(QImage *frame, const int &screen_width, const int &screen_height);
+    SceneManager(QImage *frame, const int &screen_width, const int &screen_height, const CameraAttributes &attributes);
 
-    void addModel();
-    void removeModel();
-    void changeModel();
+    void addModel(const ModelAttributes &attributes);
+    void removeModel(const int &index);
+    void changeModel(const ModelTransformation &transformation, const int &index);
 
-    void setCamera();
-    void changeCamera();
+    void setCamera(const CameraAttributes &attributes);
+    void changeCamera(const CameraTransformation &transformation);
 
     void setLight();
     void changeLight();
+
+    inline int getObjectIndex(const int &x, const int &y) const { return renderManager.getIndexByPosition(x, y); }
+
 private:
-    CameraManager camera_manager;
-    LightManager light_manager;
-    ModelManager model_manager;
-    RenderManager render_manager;
+    CameraManager cameraManager;
+    LightManager lightManager;
+    ModelManager modelManager;
+    RenderManager renderManager;
     void render();
 };
 

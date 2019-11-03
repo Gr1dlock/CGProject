@@ -1,5 +1,7 @@
 #include "modelmanager.h"
 
+#include <QtDebug>
+
 ModelManager::ModelManager()
 {
 
@@ -8,7 +10,7 @@ ModelManager::ModelManager()
 void ModelManager::addModel(const Cube &model)
 {
     models.push_back(model);
-    translations.push_back(Point<3, double>(0, 0, 0));
+    translations.emplace_back(0, 0, 0);
     Matrix<double> rotation(4, 4);
     rotation.makeIdentity();
     rotations.push_back(rotation);
@@ -19,6 +21,59 @@ void ModelManager::deleteModel(const int &index)
     models.erase(models.begin() + index);
     translations.erase(translations.begin() + index);
     rotations.erase(rotations.begin() + index);
+}
+
+void ModelManager::transformModel(const ModelTransformation &transformation, const int &index)
+{
+    if (std::holds_alternative<ModelMovement>(transformation))
+    {
+        ModelMovement movement = std::get<ModelMovement>(transformation);
+        if (fabs(movement.angleX) > EPS)
+        {
+            rotateByX(movement.angleX, index);
+        }
+        if (fabs(movement.angleY) > EPS)
+        {
+            rotateByY(movement.angleY, index);
+        }
+        if (fabs(movement.angleZ) > EPS)
+        {
+            rotateByZ(movement.angleZ, index);
+        }
+        if (fabs(movement.dx) > EPS)
+        {
+            translateByX(movement.dx, index);
+        }
+        if (fabs(movement.dy) > EPS)
+        {
+            translateByY(movement.dy, index);
+        }
+        if (fabs(movement.dz) > EPS)
+        {
+            translateByZ(movement.dz, index);
+        }
+    }
+    else
+    {
+        ModelAttributes attributes = std::get<ModelAttributes>(transformation);
+        if (attributes.lengthBot >= 0)
+        {
+            models[index].changeBotLength(attributes.lengthBot);
+        }
+        if (attributes.lengthTop >= 0)
+        {
+            models[index].changeTopLength(attributes.lengthTop);
+        }
+        if (attributes.height >= 0)
+        {
+            models[index].changeHeight(attributes.height);
+        }
+        if (attributes.nVerts >= 0)
+        {
+            models[index].changeVerticesCount(attributes.nVerts);
+        }
+    }
+
 }
 
 void ModelManager::rotateByX(const double &angle, const int &index)
@@ -57,22 +112,7 @@ void ModelManager::rotateByZ(const double &angle, const int &index)
     rotations[index] = rotations[index] * rotateZ;
 }
 
-void ModelManager::translateByX(const double &translation, const int &index)
-{
-    translations[index] = translations[index] + Point<3, double>(translation, 0, 0);
-}
-
-void ModelManager::translateByY(const double &translation, const int &index)
-{
-    translations[index] = translations[index] + Point<3, double>(0, translation, 0);
-}
-
-void ModelManager::translateByZ(const double &translation, const int &index)
-{
-    translations[index] = translations[index] + Point<3, double>(0, 0, translation);
-}
-
-Matrix<double> ModelManager::getModelView(const int &index)
+Matrix<double> ModelManager::getModelView(const int &index) const
 {
     Matrix<double> rotation = rotations[index];
     Point<3, double> translate = translations[index];

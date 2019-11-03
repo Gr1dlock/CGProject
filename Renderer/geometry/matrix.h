@@ -24,11 +24,10 @@ namespace GeometrySpace
         void makeIdentity();
         T* operator [] (int index);
         const T* operator [] (const int &index) const;
-        Matrix<T> operator * (const Matrix &other);
         Matrix<T> operator * (const Matrix &other) const;
-        Matrix<T> operator + (const Matrix &other);
-        Matrix<T> operator - (const Matrix &other);
-        Matrix<T> operator = (const Matrix &other);
+        Matrix<T> operator + (const Matrix &other) const;
+        Matrix<T> operator - (const Matrix &other) const;
+        Matrix<T> &operator = (const Matrix &other);
         Matrix<T> getTranspose();
         Matrix<T> getInverse();
         bool isZero();

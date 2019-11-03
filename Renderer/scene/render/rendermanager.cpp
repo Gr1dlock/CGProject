@@ -1,51 +1,84 @@
 #include "rendermanager.h"
 
+#include <QtDebug>
+
 RenderManager::RenderManager()
 {
 }
 
 RenderManager::RenderManager(QImage *frame, const int &sc_width, const int &sc_height)
-    : screen_width(sc_width),
-      screen_height(sc_height),
-      frame_buffer(frame)
+    : screenWidth(sc_width),
+      screenHeight(sc_height),
+      frameBuffer(frame)
 {
-    depth_buffer = std::vector<std::vector<double>> (screen_height, std::vector<double>(screen_width, 2));
-    frame_buffer->fill(Qt::black);
+    depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 2));
+    objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
+    frameBuffer->fill(Qt::black);
 }
 
-void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, const Matrix<double> &Mpersp)
+void RenderManager::renderModel(const BaseModel &model, const Matrix<double> &viewMatrix, const int &index, const Point<3, double> &cameraPos)
+{
+    std::vector<Point<3, double>> triangle(3);
+    for (int j = 0; j < model.countTriangles(); j++)
+    {
+        model.getTriangle(triangle, j);
+        if (model.getNormal(j) * MathVector<double>(triangle[0] - cameraPos) < 0)
+        {
+            renderTriangle(triangle, viewMatrix, static_cast<char>(index));
+        }
+    }
+}
+
+void RenderManager::clearFrame()
+{
+    frameBuffer->fill(Qt::black);
+    depthBuffer.clear();
+    objectsBuffer.clear();
+    depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 1));
+    objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
+}
+
+void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, const Matrix<double> &viewMatrix, const char &objectIndex)
 {
     for (int i = 0; i < 3; i++)
     {
         Point<4, double> tmp(triangle[i]);
-        tmp = tmp * Mpersp;
+        tmp = tmp * viewMatrix;
         triangle[i] = tmp;
         viewPort(triangle[i]);
     }
-    Point<2, double> left_corner(std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
-    Point<2, double> right_corner(0, 0);
-    for (int i = 0; i < 3; i++)
+    if (triangleIsVisible(triangle))
     {
-        right_corner.setX(std::max(right_corner.x(), triangle[i].x()));
-        right_corner.setY(std::max(right_corner.y(), triangle[i].y()));
-        left_corner.setX(std::min(left_corner.x(), triangle[i].x()));
-        left_corner.setY(std::min(left_corner.y(), triangle[i].y()));
-    }
-    triangle[0].setZ(1 / triangle[0].z());
-    triangle[1].setZ(1 / triangle[1].z());
-    triangle[2].setZ(1 / triangle[2].z());
-    for (double i = left_corner.x(); i <= right_corner.x(); i++)
-    {
-        for (double j = left_corner.y(); j <= right_corner.y(); j++)
+        Point<2, int> leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+        Point<2, int> rightCorner(std::numeric_limits<int>::min(), std::numeric_limits<int>::min());
+        for (int i = 0; i < 3; i++)
         {
-            std::vector<double> bar_coords = barycentric(triangle, Point<2, double>(i, j));
-            if (bar_coords[0] >= -EPS && bar_coords[1] >= -EPS && bar_coords[2] >= -EPS)
+            rightCorner.setX(std::max(rightCorner.x(), static_cast<int>(triangle[i].x())));
+            rightCorner.setY(std::max(rightCorner.y(),static_cast<int>(triangle[i].y())));
+            leftCorner.setX(std::min(leftCorner.x(), static_cast<int>(triangle[i].x())));
+            leftCorner.setY(std::min(leftCorner.y(), static_cast<int>(triangle[i].y())));
+        }
+        rightCorner.setX(std::min(rightCorner.x(), screenWidth - 1));
+        rightCorner.setY(std::min(rightCorner.y(),screenHeight - 1));
+        leftCorner.setX(std::max(leftCorner.x(), 0));
+        leftCorner.setY(std::max(leftCorner.y(), 0));
+        triangle[0].setZ(1 / triangle[0].z());
+        triangle[1].setZ(1 / triangle[1].z());
+        triangle[2].setZ(1 / triangle[2].z());
+        for (int i = leftCorner.x(); i <= rightCorner.x(); i++)
+        {
+            for (int j = leftCorner.y(); j <= rightCorner.y(); j++)
             {
-                double z = 1 / (bar_coords[0] * triangle[0].z() + bar_coords[1] * triangle[1].z() + bar_coords[2] * triangle[2].z());
-                if (z < depth_buffer[static_cast<int>(i)][static_cast<int>(j)])
+                std::vector<double> barCoords = barycentric(triangle, Point<2, double>(i, j));
+                if (barCoords[0] >= -EPS && barCoords[1] >= -EPS && barCoords[2] >= -EPS)
                 {
-                    depth_buffer[static_cast<int>(i)][static_cast<int>(j)] = z;
-                    frame_buffer->setPixel(static_cast<int>(i), static_cast<int>(j), qRgb(255, 0, 0));
+                    double z = 1 / (barCoords[0] * triangle[0].z() + barCoords[1] * triangle[1].z() + barCoords[2] * triangle[2].z());
+                    if (z < depthBuffer[j][i] && z > -1 && z < 1)
+                    {
+                        depthBuffer[j][i] = z;
+                        objectsBuffer[j][i] = objectIndex;
+                        frameBuffer->setPixel(i, j, qRgb(255, 0, 0));
+                    }
                 }
             }
         }
@@ -54,9 +87,10 @@ void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, cons
 
 void RenderManager::viewPort(Point<3, double> &point)
 {
-    point.setX(round((point.x() + 1) * 0.5 * screen_width));
-    point.setY(round(screen_height - (point.y() + 1) * 0.5 * screen_height));
+    point.setX(round((point.x() + 1) * 0.5 * screenWidth));
+    point.setY(round((point.y() + 1) * 0.5 * screenHeight));
 }
+
 
 std::vector<double> RenderManager::barycentric(const std::vector<Point<3, double>> &triangle, const Point<2, double> &P)
 {
@@ -66,13 +100,13 @@ std::vector<double> RenderManager::barycentric(const std::vector<Point<3, double
     double square = (A.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - A.x());
     if (square > EPS)
     {
-        std::vector<double> bar_coords(3);
-        bar_coords[0] = (P.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - P.x());
-        bar_coords[0] /= square;
-        bar_coords[1] = (P.y() - A.y()) * (C.x() - A.x()) + (C.y() - A.y()) * (A.x() - P.x());
-        bar_coords[1] /= square;
-        bar_coords[2] = 1 - bar_coords[0] - bar_coords[1];
-        return bar_coords;
+        std::vector<double> barCoords(3);
+        barCoords[0] = (P.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - P.x());
+        barCoords[0] /= square;
+        barCoords[1] = (P.y() - A.y()) * (C.x() - A.x()) + (C.y() - A.y()) * (A.x() - P.x());
+        barCoords[1] /= square;
+        barCoords[2] = 1 - barCoords[0] - barCoords[1];
+        return barCoords;
     }
     return std::vector<double> {-1, -1, -1};
 }

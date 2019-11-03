@@ -1,18 +1,23 @@
 #include "model.h"
 #include "model.h"
 
-Cube::Cube(const int &verts, const double &length_top,const double &length_bot, const double &height)
+Cube::Cube(const ModelAttributes &attributes)
 {
-    computeVertices(verts, length_top, length_bot, height);
-    computeTriangles(verts);
+    computeVertices(attributes);
+    computeTriangles(attributes.nVerts);
 }
 
-void Cube::changeVerticesCount(const int &verts, const double &length_top, const double &length_bot, const double &height)
+void Cube::changeVerticesCount(const int &nVerts)
 {
+    ModelAttributes attributes;
+    attributes.lengthTop = vertices[0].x();
+    attributes.lengthBot = vertices[countVertices() / 2].x();
+    attributes.height = -vertices[0].y() * 2;
+    attributes.nVerts = nVerts;
     vertices.clear();
     triangles.clear();
-    computeVertices(verts, length_top, length_bot, height);
-    computeTriangles(verts);
+    computeVertices(attributes);
+    computeTriangles(nVerts);
 }
 
 void Cube::changeTopLength(const double &length)
@@ -52,47 +57,60 @@ void Cube::changeHeight(const double &height)
     }
 }
 
-void Cube::computeVertices(const int &verts, const double &length_top,const double &length_bot, const double &height)
+void Cube::computeVertices(const ModelAttributes &attributes)
 {
-    double d_angle = 2 * M_PI / verts;
+    double d_angle = 2 * M_PI / attributes.nVerts;
     double angle = 0;
-    double half_height = height / 2;
-    for (int i = 0; i < verts; i++)
+    double half_height = attributes.height / 2;
+    for (int i = 0; i < attributes.nVerts; i++)
     {
-        vertices.push_back(Point<3, double>(length_bot * cos(angle), -half_height, length_bot * sin(angle)));
+        vertices.emplace_back(attributes.lengthBot * cos(angle), -half_height, attributes.lengthBot * sin(angle));
         angle += d_angle;
     }
-    for (int i = 0; i < verts; i++)
+    for (int i = 0; i < attributes.nVerts; i++)
     {
-        vertices.push_back(Point<3, double>(length_top * cos(angle), half_height, length_top * sin(angle)));
+        vertices.emplace_back(attributes.lengthTop * cos(angle), half_height, attributes.lengthTop * sin(angle));
         angle -= d_angle;
     }
 }
 
-void Cube::computeTriangles(const int &verts)
+void Cube::computeTriangles(const int &nVerts)
 {
-    for (int i = 0; i < verts - 2; i++)
+    MathVector<double> normal(3);
+    for (int i = 0; i < nVerts - 2; i++)
     {
         triangles.push_back(0);
         triangles.push_back(i + 1);
         triangles.push_back(i + 2);
-        triangles.push_back(verts);
-        triangles.push_back(verts + i + 1);
-        triangles.push_back(verts + i + 2);
+        normal = MathVector<double>(vertices[i + 1] - vertices[0]) ^ MathVector<double>(vertices[i + 2] - vertices[i + 1]);
+        normal.normalize();
+        normals.push_back(normal);
+        triangles.push_back(nVerts);
+        triangles.push_back(nVerts + i + 1);
+        triangles.push_back(nVerts + i + 2);
+        normal = MathVector<double>(vertices[nVerts + i + 1] - vertices[nVerts]) ^ MathVector<double>(vertices[nVerts + i + 2] - vertices[nVerts + i + 1]);
+        normal.normalize();
+        normals.push_back(normal);
     }
-    for (int i = 0; i < verts; i++)
+    for (int i = 0; i < nVerts; i++)
     {
-        int first = verts + i;
-        int second = verts - i;
-        int third = verts - i - 1;
-        int fourth = verts + i + 1;
-        second = second == verts ? 0 : second;
-        fourth = fourth == verts * 2 ? verts : fourth;
+        int first = nVerts + i;
+        int second = nVerts - i;
+        int third = nVerts - i - 1;
+        int fourth = nVerts + i + 1;
+        second = second == nVerts ? 0 : second;
+        fourth = fourth == nVerts * 2 ? nVerts : fourth;
         triangles.push_back(first);
         triangles.push_back(second);
         triangles.push_back(third);
+        normal = MathVector<double>(vertices[second] - vertices[first]) ^ MathVector<double>(vertices[third] - vertices[second]);
+        normal.normalize();
+        normals.push_back(normal);
         triangles.push_back(first);
         triangles.push_back(third);
         triangles.push_back(fourth);
+        normal = MathVector<double>(vertices[third] - vertices[first]) ^ MathVector<double>(vertices[fourth] - vertices[third]);
+        normal.normalize();
+        normals.push_back(normal);
     }
 }

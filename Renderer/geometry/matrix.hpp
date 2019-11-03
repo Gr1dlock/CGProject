@@ -99,8 +99,8 @@ namespace GeometrySpace
     {
         if (index < _rows)
             return data[index];
-        else
-            throw std::out_of_range("Index out of range");
+
+        throw std::out_of_range("Index out of range");
     }
 
     template <typename T>
@@ -108,30 +108,8 @@ namespace GeometrySpace
     {
         if (index < _rows)
             return data[index];
-        else
-            throw std::out_of_range("Index out of range");
-    }
 
-    template <typename T>
-    Matrix<T> Matrix<T>::operator * (const Matrix &other)
-    {
-        if (_cols == other.countRows())
-        {
-            Matrix result(_rows, _cols);
-            for (int i = 0; i < _rows; i++)
-            {
-                for (int j = 0; j < other.countCols(); j++)
-                {
-                    for (int k = 0; k < _cols; k++)
-                    {
-                        result[i][j] += (*this)[i][k] * other[k][j];
-                    }
-                }
-            }
-            return result;
-        }
-        else
-            throw "Incompatible sizes of the matrices";
+        throw std::out_of_range("Index out of range");
     }
 
     template <typename T>
@@ -152,12 +130,12 @@ namespace GeometrySpace
             }
             return result;
         }
-        else
-            throw "Incompatible sizes of the matrices";
+
+        throw "Incompatible sizes of the matrices";
     }
 
     template <typename T>
-    Matrix<T> Matrix<T>::operator + (const Matrix &other)
+    Matrix<T> Matrix<T>::operator + (const Matrix &other) const
     {
         if (_cols == other.countCols() && _rows == other.countRows())
         {
@@ -167,12 +145,12 @@ namespace GeometrySpace
                     result[i][j] += other[i][j];
             return result;
         }
-        else
-            throw "Incompatible sizes of the matrices";
+
+        throw "Incompatible sizes of the matrices";
     }
 
     template <typename T>
-    Matrix<T> Matrix<T>::operator - (const Matrix &other)
+    Matrix<T> Matrix<T>::operator - (const Matrix &other) const
     {
         if (_cols == other.countCols() && _rows == other.countRows())
         {
@@ -182,8 +160,8 @@ namespace GeometrySpace
                     result[i][j] -= other[i][j];
             return result;
         }
-        else
-            throw "Incompatible sizes of the matrices";
+
+        throw "Incompatible sizes of the matrices";
     }
 
     template <typename T>
@@ -242,8 +220,8 @@ namespace GeometrySpace
                     inverse[i][j] = result[i][j + _cols];
             return inverse;
         }
-        else
-            throw "Not a square matrix";
+
+        throw "Not a square matrix";
     }
 
     template <typename T>
@@ -261,7 +239,7 @@ namespace GeometrySpace
     }
 
     template <typename T>
-    Matrix<T> Matrix<T>::operator = (const Matrix &other)
+    Matrix<T> &Matrix<T>::operator = (const Matrix &other)
     {
         if (this == &other) return *this;
         try

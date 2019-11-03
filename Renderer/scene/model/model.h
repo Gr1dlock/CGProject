@@ -6,14 +6,14 @@
 class Cube: public BaseModel
 {
 public:
-    Cube(const int &verts, const double &length_top,const double &length_bot, const double &height);
-    void changeVerticesCount(const int &verts, const double &length_top,const double &length_bot, const double &height) override;
+    Cube(const ModelAttributes &attributes);
+    void changeVerticesCount(const int &nVerts) override;
     void changeTopLength(const double &length) override;
     void changeBotLength(const double &length) override;
     void changeHeight(const double &height) override;
 private:
-    void computeVertices(const int &verts, const double &length_top,const double &length_bot, const double &height) override;
-    void computeTriangles(const int &verts) override;
+    void computeVertices(const ModelAttributes &attributes) override;
+    void computeTriangles(const int &nVerts) override;
 };
 
 #endif // MODEL_H

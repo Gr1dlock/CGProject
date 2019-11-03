@@ -1,21 +1,19 @@
 #include "camera.h"
 
 Camera::Camera()
-    : direction(3),
-      up(3),
-      right(3)
+    : direction_(3),
+      up_(3),
+      right_(3)
 {
 }
 
-Camera::Camera(const Point<3, double> &eye, const Point<3, double> &center, const MathVector<double> &top, const ViewFrustrum &frust)
+Camera::Camera(const Point<3, double> &position, const MathVector<double> &direction, const MathVector<double> &up,
+       const MathVector<double> &right, const ViewFrustrum &frustrum)
     : Camera()
 {
-    position = eye;
-    direction = center - eye;
-    direction.normalise();
-    right = (top ^ direction);
-    right.normalise();
-    up = direction ^ right;
-    up.normalise();
-    frustrum = frust;
+    position_ = position;
+    direction_ = direction;
+    up_ = up;
+    right_ = right;
+    frustrum_ = frustrum;
 }
