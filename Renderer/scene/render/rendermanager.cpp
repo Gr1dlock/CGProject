@@ -32,25 +32,25 @@ void RenderManager::renderModel(const BaseModel &model, const Matrix<double> &vi
 void RenderManager::clearFrame()
 {
     frameBuffer->fill(Qt::black);
-    depthBuffer.clear();
-    objectsBuffer.clear();
     depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 1));
     objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
 }
 
 void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, const Matrix<double> &viewMatrix, const char &objectIndex)
 {
+    Point<4, double> tmp;
     for (int i = 0; i < 3; i++)
     {
-        Point<4, double> tmp(triangle[i]);
+        tmp = triangle[i];
         tmp = tmp * viewMatrix;
         triangle[i] = tmp;
         viewPort(triangle[i]);
     }
     if (triangleIsVisible(triangle))
     {
-        Point<2, int> leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
-        Point<2, int> rightCorner(std::numeric_limits<int>::min(), std::numeric_limits<int>::min());
+        std::vector<double> barCoords(3);
+        QPoint leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+        QPoint rightCorner(std::numeric_limits<int>::min(), std::numeric_limits<int>::min());
         for (int i = 0; i < 3; i++)
         {
             rightCorner.setX(std::max(rightCorner.x(), static_cast<int>(triangle[i].x())));
@@ -69,7 +69,7 @@ void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, cons
         {
             for (int j = leftCorner.y(); j <= rightCorner.y(); j++)
             {
-                std::vector<double> barCoords = barycentric(triangle, Point<2, double>(i, j));
+                barycentric(barCoords, triangle[0], triangle[1], triangle[2], QPoint(i, j));
                 if (barCoords[0] >= -EPS && barCoords[1] >= -EPS && barCoords[2] >= -EPS)
                 {
                     double z = 1 / (barCoords[0] * triangle[0].z() + barCoords[1] * triangle[1].z() + barCoords[2] * triangle[2].z());
@@ -92,21 +92,19 @@ void RenderManager::viewPort(Point<3, double> &point)
 }
 
 
-std::vector<double> RenderManager::barycentric(const std::vector<Point<3, double>> &triangle, const Point<2, double> &P)
+void RenderManager::barycentric(std::vector<double> &barCoords, const Point<3, double> &A, const Point<3, double> &B, const Point<3, double> &C, const QPoint &P)
 {
-    Point<3, double> A = triangle[0];
-    Point<3, double> B = triangle[1];
-    Point<3, double> C = triangle[2];
     double square = (A.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - A.x());
     if (square > EPS)
     {
-        std::vector<double> barCoords(3);
         barCoords[0] = (P.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - P.x());
         barCoords[0] /= square;
         barCoords[1] = (P.y() - A.y()) * (C.x() - A.x()) + (C.y() - A.y()) * (A.x() - P.x());
         barCoords[1] /= square;
         barCoords[2] = 1 - barCoords[0] - barCoords[1];
-        return barCoords;
     }
-    return std::vector<double> {-1, -1, -1};
+    else
+    {
+        barCoords[0] = -1;
+    }
 }

@@ -29,7 +29,7 @@ private:
                 pointIsVisible(triangle[2].x(), triangle[2].y(), triangle[2].z()));
     }
     void renderTriangle(std::vector<Point<3, double>> &triangle, const Matrix<double> &viewMatrix, const char &objectIndex);
-    std::vector<double> barycentric(const std::vector<Point<3, double>> &triangle, const Point<2, double> &P);
+    void barycentric(std::vector<double> &barCoords, const Point<3, double> &A, const Point<3, double> &B, const Point<3, double> &C, const QPoint &P);
     void viewPort(Point<3, double> &point);
     int screenWidth;
     int screenHeight;
