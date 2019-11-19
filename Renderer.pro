@@ -18,6 +18,7 @@ QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
 
 SOURCES += \
     color/color.cpp \
+    controller/controller.cpp \
     interface/mainwindow.cpp \
     interface/renderwidget.cpp \
     main.cpp \
@@ -29,10 +30,11 @@ SOURCES += \
     scene/model/basemodel.cpp \
     scene/model/modelmanager.cpp \
     scene/render/rendermanager.cpp \
-    scene/scenemanager.cpp
+    scene/render/shader.cpp
 
 HEADERS += \
     color/color.h \
+    controller/controller.h \
     geometry/geometry.h \
     geometry/geometry.hpp \
     geometry/mathvector.h \
@@ -51,7 +53,8 @@ HEADERS += \
     scene/model/basemodel.h \
     scene/model/modelmanager.h \
     scene/render/rendermanager.h \
-    scene/scenemanager.h
+    scene/render/shader.h \
+    scene/scenecontainer.h
 
 FORMS += \
     interface/mainwindow.ui

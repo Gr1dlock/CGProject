@@ -276,6 +276,38 @@ namespace GeometrySpace
             data[i] /= mod;
         }
     }
+
+    template<typename T>
+    MathVector<T> MathVector<T>::operator * (const Matrix<T> &other) const
+    {
+        if ((length == other.countRows() && length == other.countCols()) ||
+                (length == other.countRows() - 1 && length == other.countCols() - 1))
+        {
+            MathVector<T> result(length);
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = 0;
+                for (int j = 0; j < length; j++)
+                {
+                    result[i] += data[j] * other[j][i];
+                }
+            }
+            return result;
+        }
+        throw("Invalid matrix size");
+    }
+
+    template <typename T>
+    template <int size_T>
+    T MathVector<T>::operator * (const Point<size_T, T> &other) const
+    {
+        T result = 0;
+        for (int i = 0; i < size_T; i++)
+        {
+            result += data[i] * other[i];
+        }
+        return result;
+    }
 }
 
 #endif // MATHVECTOR_HPP

@@ -32,6 +32,9 @@ namespace GeometrySpace
         MathVector<T> operator + (const MathVector<T> &other) const;
         MathVector<T> operator - (const MathVector<T> &other) const;
         MathVector<T> operator * (double f) const;
+        MathVector<T> operator * (const Matrix<T> &other) const;
+        template <int size_T>
+        T operator * (const Point<size_T, T> &other) const;
         T operator * (const MathVector<T>& other) const;
         MathVector<T> operator ^ (const MathVector<T>& other) const;
         T &operator [] (int index);

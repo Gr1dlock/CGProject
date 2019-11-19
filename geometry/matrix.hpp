@@ -165,17 +165,21 @@ namespace GeometrySpace
     }
 
     template <typename T>
-    Matrix<T> Matrix<T>::getTranspose()
+    void Matrix<T>::transpose()
     {
-        Matrix result(_cols, _rows);
         for (int i = 0; i < _rows; i++)
+        {
             for (int j = 0; j < _cols; j++)
-                result[j][i] = (*this)[i][j];
-        return result;
+            {
+                T tmp = data[j][i];
+                data[j][i] = data[i][j];
+                data[i][j] = tmp;
+            }
+        }
     }
 
     template <typename T>
-    Matrix<T> Matrix<T>::getInverse()
+    void Matrix<T>::inverse()
     {
         if (_rows == _cols)
         {
@@ -183,7 +187,7 @@ namespace GeometrySpace
             Matrix result(_rows, _cols * 2);
             for (int i = 0; i < _rows; i++)
                 for (int j = 0; j < _cols; j++)
-                    result[i][j] = (*this)[i][j];
+                    result[i][j] = data[i][j];
             for (int i = 0; i < _rows; i++)
                 result[i][i + _cols] = 1;
 
@@ -214,14 +218,14 @@ namespace GeometrySpace
                 }
             }
 
-            Matrix inverse(_rows, _cols);
             for (int i = 0; i < _rows; i++)
                 for (int j = 0; j < _cols; j++)
-                    inverse[i][j] = result[i][j + _cols];
-            return inverse;
+                    data[i][j] = result[i][j + _cols];
         }
-
-        throw "Not a square matrix";
+        else
+        {
+            throw "Not a square matrix";
+        }
     }
 
     template <typename T>

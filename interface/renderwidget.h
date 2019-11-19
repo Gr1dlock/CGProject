@@ -4,9 +4,12 @@
 #include <QWidget>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QTimer>
 
 #include "geometry/geometry.hpp"
-#include "scene/scenemanager.h"
+#include "controller/controller.h"
+
+#define MAX_MODELS 3
 
 using namespace GeometrySpace;
 
@@ -15,7 +18,11 @@ class RenderWidget : public QWidget
     Q_OBJECT
 public:
     explicit RenderWidget(QWidget *parent = nullptr);
-
+    void setCameraSpeed(const int &speed);
+    int addModel(const ModelAttributes &attributes);
+    void moveModel(const ModelMovement &movement);
+    void deleteModel();
+    void deleteAllModels();
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
@@ -25,13 +32,29 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
-    QImage *image;
-    SceneManager sceneManager;
+    QPointF curPosition;
+    QTimer movementTimer;
+    Controller controller;
     int widgetHeight;
     int widgetWidth;
-    QPointF curPosition;
-    CameraMovement cameraMoving;
+    QImage *image;
+    int cameraSpeed;
+    int currentModel;
     bool cameraRotating;
+    CameraMovement cameraMovement;
+
+private slots:
+    void moveCamera();
+    void changeCamera(CameraChange change);
+    void changeModel(ModelChange change);
+signals:
+    void pitchChanged(double);
+    void yawChanged(double);
+    void cameraXChanged(double);
+    void cameraYChanged(double);
+    void cameraZChanged(double);
+    void catchedModel(ModelAttributes);
+    void catchedNothing();
 };
 
 #endif // RENDERWIDGET_H

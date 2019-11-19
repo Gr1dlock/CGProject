@@ -1,7 +1,5 @@
 #include "rendermanager.h"
 
-#include <QtDebug>
-
 RenderManager::RenderManager()
 {
 }
@@ -16,90 +14,100 @@ RenderManager::RenderManager(QImage *frame, const int &sc_width, const int &sc_h
     frameBuffer->fill(Qt::black);
 }
 
-void RenderManager::renderModel(const BaseModel &model, const Matrix<double> &viewMatrix, const int &index, const Point<3, double> &cameraPos)
+void RenderManager::renderModel(const BaseModel &model, const Shader &shader, const int &index)
 {
+    double renderTime = 0;
     std::vector<Point<3, double>> triangle(3);
-    for (int j = 0; j < model.countTriangles(); j++)
+    std::vector<Point<4, double>> result(9);
+    int count;
+    for (int k = 0; k < 100; k++)
     {
-        model.getTriangle(triangle, j);
-        if (model.getNormal(j) * MathVector<double>(triangle[0] - cameraPos) < 0)
+        clearFrame();
+        for (int j = 0; j < model.countTriangles(); j++)
         {
-            renderTriangle(triangle, viewMatrix, static_cast<char>(index));
+            model.getTriangle(triangle, j);
+            count = shader.vertex(result, triangle, model.getNormal(j));
+            for (int i = 0; i < count - 2; i++)
+            {
+                triangle[2] = result[0];
+                triangle[1] = result[i + 1];
+                triangle[0] = result[i + 2];
+                auto time1 = std::chrono::steady_clock::now();
+                renderTriangle(triangle, static_cast<char>(index));
+                auto time2 = std::chrono::steady_clock::now();
+                renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
+            }
         }
     }
+    qDebug() << "Render time: " << renderTime / 100;
 }
 
 void RenderManager::clearFrame()
 {
     frameBuffer->fill(Qt::black);
-    depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 1));
+    depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 2));
     objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
 }
 
-void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, const Matrix<double> &viewMatrix, const char &objectIndex)
+void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, const char &objectIndex)
 {
-    Point<4, double> tmp;
     for (int i = 0; i < 3; i++)
     {
-        tmp = triangle[i];
-        tmp = tmp * viewMatrix;
-        triangle[i] = tmp;
         viewPort(triangle[i]);
     }
-    if (triangleIsVisible(triangle))
+    QPoint leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+    QPoint rightCorner(0, 0);
+    for (int i = 0; i < 3; i++)
     {
-        std::vector<double> barCoords(3);
-        QPoint leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
-        QPoint rightCorner(std::numeric_limits<int>::min(), std::numeric_limits<int>::min());
-        for (int i = 0; i < 3; i++)
+        rightCorner.setX(std::max(rightCorner.x(), static_cast<int>(triangle[i].x())));
+        rightCorner.setY(std::max(rightCorner.y(),static_cast<int>(triangle[i].y())));
+        leftCorner.setX(std::min(leftCorner.x(), static_cast<int>(triangle[i].x())));
+        leftCorner.setY(std::min(leftCorner.y(), static_cast<int>(triangle[i].y())));
+    }
+    rightCorner.setX(std::min(rightCorner.x(), screenWidth - 1));
+    rightCorner.setY(std::min(rightCorner.y(),screenHeight - 1));
+    double square = (triangle[0].y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) + (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - triangle[0].x());
+    triangle[0].setZ(1 / triangle[0].z());
+    triangle[1].setZ(1 / triangle[1].z());
+    triangle[2].setZ(1 / triangle[2].z());
+    std::vector<double> barCoords(3);
+    for (int i = leftCorner.x(); i <= rightCorner.x(); i++)
+    {
+        for (int j = leftCorner.y(); j <= rightCorner.y(); j++)
         {
-            rightCorner.setX(std::max(rightCorner.x(), static_cast<int>(triangle[i].x())));
-            rightCorner.setY(std::max(rightCorner.y(),static_cast<int>(triangle[i].y())));
-            leftCorner.setX(std::min(leftCorner.x(), static_cast<int>(triangle[i].x())));
-            leftCorner.setY(std::min(leftCorner.y(), static_cast<int>(triangle[i].y())));
-        }
-        rightCorner.setX(std::min(rightCorner.x(), screenWidth - 1));
-        rightCorner.setY(std::min(rightCorner.y(),screenHeight - 1));
-        leftCorner.setX(std::max(leftCorner.x(), 0));
-        leftCorner.setY(std::max(leftCorner.y(), 0));
-        triangle[0].setZ(1 / triangle[0].z());
-        triangle[1].setZ(1 / triangle[1].z());
-        triangle[2].setZ(1 / triangle[2].z());
-        for (int i = leftCorner.x(); i <= rightCorner.x(); i++)
-        {
-            for (int j = leftCorner.y(); j <= rightCorner.y(); j++)
+            barycentric(barCoords, triangle, QPoint(i, j), square);
+            if (barCoords[0] >= -EPS && barCoords[1] >= -EPS && barCoords[2] >= -EPS)
             {
-                barycentric(barCoords, triangle[0], triangle[1], triangle[2], QPoint(i, j));
-                if (barCoords[0] >= -EPS && barCoords[1] >= -EPS && barCoords[2] >= -EPS)
+                double z = 1 / (barCoords[0] * triangle[0].z() + barCoords[1] * triangle[1].z() + barCoords[2] * triangle[2].z());
+                if (z <= depthBuffer[j][i])
                 {
-                    double z = 1 / (barCoords[0] * triangle[0].z() + barCoords[1] * triangle[1].z() + barCoords[2] * triangle[2].z());
-                    if (z < depthBuffer[j][i] && z > -1 && z < 1)
-                    {
-                        depthBuffer[j][i] = z;
-                        objectsBuffer[j][i] = objectIndex;
+                    depthBuffer[j][i] = z;
+                    objectsBuffer[j][i] = objectIndex;
+                    if (objectIndex == 0)
                         frameBuffer->setPixel(i, j, qRgb(255, 0, 0));
-                    }
+                    else
+                        frameBuffer->setPixel(i, j, qRgb(0, 255, 0));
                 }
             }
         }
+
     }
 }
 
 void RenderManager::viewPort(Point<3, double> &point)
 {
-    point.setX(round((point.x() + 1) * 0.5 * screenWidth));
-    point.setY(round((point.y() + 1) * 0.5 * screenHeight));
+    point.setX((point.x() + 1) * 0.5 * screenWidth);
+    point.setY(screenHeight - (point.y() + 1) * 0.5 * screenHeight);
+    point.setZ((point.z() + 1) * 0.5);
 }
 
-
-void RenderManager::barycentric(std::vector<double> &barCoords, const Point<3, double> &A, const Point<3, double> &B, const Point<3, double> &C, const QPoint &P)
+void RenderManager::barycentric(std::vector<double> &barCoords, const std::vector<Point<3, double>> &triangle, const QPoint &P, const double &square)
 {
-    double square = (A.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - A.x());
-    if (square > EPS)
+    if (square > -EPS)
     {
-        barCoords[0] = (P.y() - C.y()) * (B.x() - C.x()) + (B.y() - C.y()) * (C.x() - P.x());
+        barCoords[0] = (P.y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) + (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - P.x());
         barCoords[0] /= square;
-        barCoords[1] = (P.y() - A.y()) * (C.x() - A.x()) + (C.y() - A.y()) * (A.x() - P.x());
+        barCoords[1] = (P.y() - triangle[0].y()) * (triangle[2].x() - triangle[0].x()) + (triangle[2].y() - triangle[0].y()) * (triangle[0].x() - P.x());
         barCoords[1] /= square;
         barCoords[2] = 1 - barCoords[0] - barCoords[1];
     }

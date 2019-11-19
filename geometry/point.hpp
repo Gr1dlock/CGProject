@@ -143,7 +143,7 @@ namespace GeometrySpace
     Point<size, T> Point<size, T>::operator *(double f) const
     {
         Point result(*this);
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < size; i++)
             result[i] *= f;
         return result;
     }

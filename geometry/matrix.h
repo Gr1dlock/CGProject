@@ -28,8 +28,8 @@ namespace GeometrySpace
         Matrix<T> operator + (const Matrix &other) const;
         Matrix<T> operator - (const Matrix &other) const;
         Matrix<T> &operator = (const Matrix &other);
-        Matrix<T> getTranspose();
-        Matrix<T> getInverse();
+        void transpose();
+        void inverse();
         bool isZero();
     };
 }
