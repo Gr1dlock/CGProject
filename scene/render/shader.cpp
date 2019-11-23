@@ -2,7 +2,9 @@
 
 Shader::Shader()
     : mvpMatrix_(4, 4),
-      modelMatrix_(4, 4)
+      modelMatrix_(4, 4),
+      lightDir_(3),
+      eyeDir_(3)
 {
     planes_ = { {-1, 0, 0, 1},
                 {1, 0, 0, 1},
@@ -12,18 +14,21 @@ Shader::Shader()
                 {0, 0, -1, 1}};
 }
 
-Shader::Shader(const Matrix<double> &mvpMatrix, const Matrix<double> &modelMatrix, const Point<3, double> &cameraPosition)
+Shader::Shader(const Matrix<double> &mvpMatrix, const Matrix<double> &modelMatrix,
+               const Point<3, double> &cameraPosition, const Point<3, double> &lightPosition)
     : Shader()
 {
     mvpMatrix_ = mvpMatrix;
     modelMatrix_ = modelMatrix;
     cameraPosition_ = cameraPosition;
+    lightPosition_ = lightPosition;
 }
 
-int Shader::vertex(std::vector<Point<4, double>> &result, const std::vector<Point<3, double>> &triangle, const MathVector<double> &normal) const
+int Shader::vertex(std::vector<Point<4, double>> &result, const std::vector<Point<3, double>> &triangle, const MathVector<double> &normal)
 {
     int count = 0;
-    if (normal * modelMatrix_ * MathVector<double>(triangle[0] * modelMatrix_ - cameraPosition_) < EPS)
+    normal_ = normal * modelMatrix_;
+    if (normal_ * MathVector<double>(triangle[0] * modelMatrix_ - cameraPosition_) < EPS)
     {
         std::vector<Point<4, double>> clippedPolygon(9);
         for (int i = 0; i < 3; i++)
@@ -41,6 +46,14 @@ int Shader::vertex(std::vector<Point<4, double>> &result, const std::vector<Poin
         }
     }
     return count;
+}
+
+void Shader::geometry(const std::vector<Point<3, double>> &triangle)
+{
+    for (const auto &point: triangle)
+    {
+
+    }
 }
 
 void Shader::findIntersection(Point<4, double> &C, const MathVector<double> &plane, const Point<4, double> &A, const Point<4, double> &B) const

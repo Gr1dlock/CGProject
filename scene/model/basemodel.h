@@ -4,6 +4,12 @@
 #include <vector>
 #include "geometry/geometry.hpp"
 #include "color/color.h"
+struct Material
+{
+    Color diffuse_;
+    Color specular_;
+    int shininess_;
+};
 
 struct ModelAttributes
 {
@@ -42,6 +48,7 @@ protected:
     std::vector<MathVector<double>> normals_;
     Matrix<double> rotation_;
     Point<3, double> translation_;
+    Material material_;
 };
 
 #endif // BASEMODEL_H

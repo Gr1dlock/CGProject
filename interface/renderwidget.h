@@ -5,7 +5,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QTimer>
-
+#include <thread>
 #include "geometry/geometry.hpp"
 #include "controller/controller.h"
 

@@ -1,6 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <iostream>
 
 class Color
 {
@@ -18,6 +19,7 @@ public:
     inline float getAlpha() const { return a; }
     Color operator + (const Color &other) const;
     Color operator - (const Color &other) const;
+    Color operator * (const Color &other) const;
     Color operator * (float f) const;
 private:
     unsigned char r;
