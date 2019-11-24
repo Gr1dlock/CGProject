@@ -16,21 +16,22 @@ RenderManager::RenderManager(QImage *frame, const int &sc_width, const int &sc_h
 
 void RenderManager::renderModel(const BaseModel &model, Shader &shader, const int &index)
 {
-//    double renderTime = 0;
+    double renderTime = 0;
     char objectIndex = index;
-    std::vector<Point<3, double>> triangle(3);
-    std::vector<Point<4, double>> result(9);
+    std::vector<Vector3D<double>> triangle(3);
+    std::vector<Vector4D<double>> result(9);
     int count;
-//    for (int k = 0; k < 100; k++)
-//    {
-//        clearFrame();
-//        auto time1 = std::chrono::steady_clock::now();
+    for (int k = 0; k < 100; k++)
+    {
+        clearFrame();
+        auto time1 = std::chrono::steady_clock::now();
         for (int j = 0; j < model.countTriangles(); j++)
         {
             model.getTriangle(triangle, j);
             count = shader.vertex(result, triangle, model.getNormal(j));
             for (int i = 0; i < count - 2; i++)
             {
+                qDebug() << k;
                 shader.geometry({result[0], result[i+1], result[i+2]});
                 triangle[2] = result[0];
                 triangle[1] = result[i + 1];
@@ -38,10 +39,10 @@ void RenderManager::renderModel(const BaseModel &model, Shader &shader, const in
                 renderTriangle(triangle, objectIndex, shader);
             }
         }
-//        auto time2 = std::chrono::steady_clock::now();
-//        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
-//    }
-//    qDebug() << "Render time: " << renderTime / 100;
+        auto time2 = std::chrono::steady_clock::now();
+        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
+    }
+    qDebug() << "Render time: " << renderTime / 100;
 }
 
 void RenderManager::clearFrame()
@@ -51,7 +52,7 @@ void RenderManager::clearFrame()
     objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
 }
 
-void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, const char &objectIndex, const Shader &shader)
+void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, const char &objectIndex, const Shader &shader)
 {
     for (auto &point: triangle)
     {
@@ -97,14 +98,14 @@ void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, cons
     }
 }
 
-void RenderManager::viewPort(Point<3, double> &point)
+void RenderManager::viewPort(Vector3D<double> &point)
 {
     point.setX((point.x() + 1) * 0.5 * screenWidth);
     point.setY(screenHeight - (point.y() + 1) * 0.5 * screenHeight);
     point.setZ((point.z() + 2) * 0.5);
 }
 
-void RenderManager::barycentric(std::vector<double> &barCoords, const std::vector<Point<3, double>> &triangle, const QPoint &P, const double &square)
+void RenderManager::barycentric(std::vector<double> &barCoords, const std::vector<Vector3D<double>> &triangle, const QPoint &P, const double &square)
 {
     barCoords[0] = (P.y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) + (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - P.x());
     barCoords[0] /= square;

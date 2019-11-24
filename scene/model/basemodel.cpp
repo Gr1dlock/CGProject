@@ -1,8 +1,7 @@
 #include "basemodel.h"
 
 BaseModel::BaseModel()
-    :rotation_(4, 4),
-      translation_(0, 0, 0)
+    :rotation_(4, 4)
 {
     rotation_.makeIdentity();
 }
@@ -11,7 +10,7 @@ BaseModel::~BaseModel()
 {
 }
 
-void BaseModel::getTriangle(std::vector<Point<3, double> > &triangle, const int &num) const
+void BaseModel::getTriangle(std::vector<Vector3D<double> > &triangle, const int &num) const
 {
     int index = num * 3;
     triangle[0] = vertices_[triangles_[index]];

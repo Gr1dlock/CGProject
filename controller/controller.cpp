@@ -103,7 +103,7 @@ double Controller::getPitch()
     return camera.getPitch();
 }
 
-Point<3, double> Controller::getCameraPos()
+Vector3D<double> Controller::getCameraPos()
 {
     Camera &camera = sceneContainer.getCamera();
     return camera.getPosition();
@@ -164,21 +164,21 @@ void Controller::changeCamera(const CameraTransformation &transformation)
         }
         case CameraParam::POS_X:
         {
-            Point<3, double> position = camera.getPosition();
+            Vector3D<double> position(camera.getPosition());
             position.setX(change.value);
             camera.setPosition(position);
             break;
         }
         case CameraParam::POS_Y:
         {
-            Point<3, double> position = camera.getPosition();
+            Vector3D<double> position(camera.getPosition());
             position.setY(change.value);
             camera.setPosition(position);
             break;
         }
         case CameraParam::POS_Z:
         {
-            Point<3, double> position = camera.getPosition();
+            Vector3D<double> position(camera.getPosition());
             position.setZ(change.value);
             camera.setPosition(position);
             break;
@@ -201,7 +201,7 @@ void Controller::render()
     Matrix<double> modelMatrix(4, 4);
     Shader shader;
     shader.setCameraPosition(camera.getPosition());
-    shader.setLightPosition(Point<3, double>(0, 150, 0));
+    shader.setLightPosition(Vector3D<double>(0, 150, 0));
     for (int i = 0; i < sceneContainer.countModels(); i++)
     {
         Cube model = sceneContainer.getModel(i);

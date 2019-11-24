@@ -40,7 +40,7 @@ public:
     void changeModel(const ModelTransformation &transformation, const int &index);
     double getYaw();
     double getPitch();
-    Point<3, double> getCameraPos();
+    Vector3D<double> getCameraPos();
     void deleteAllModels();
 private:
     CameraManager cameraManager;

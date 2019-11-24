@@ -16,7 +16,7 @@ Shader::Shader()
 }
 
 Shader::Shader(const Matrix<double> &vpMatrix, const Matrix<double> &modelMatrix,
-               const Point<3, double> &cameraPosition, const Point<3, double> &lightPosition)
+               const Vector3D<double> &cameraPosition, const Vector3D<double> &lightPosition)
     : Shader()
 {
     mvpMatrix_ = modelMatrix * vpMatrix;
@@ -41,33 +41,33 @@ void Shader::setMaterial(const Material &material)
     material_.shininess_ = material.shininess_;
 }
 
-int Shader::vertex(std::vector<Point<4, double>> &result, const std::vector<Point<3, double>> &triangle, const MathVector<double> &normal)
+int Shader::vertex(std::vector<Vector4D<double>> &result, const std::vector<Vector3D<double>> &triangle, const Vector3D<double> &normal)
 {
     int count = 0;
     normal_ = normal * modelMatrix_;
-    if (normal_ * MathVector<double>(triangle[0] * modelMatrix_ - cameraPosition_) < EPS)
+    if (normal_ * ((triangle[0] ^ modelMatrix_) - cameraPosition_) < EPS)
     {
-        std::vector<Point<4, double>> clippedPolygon(9);
+        std::vector<Vector4D<double>> clippedPolygon(9);
         for (int i = 0; i < 3; i++)
         {
             clippedPolygon[i] = triangle[i];
+            clippedPolygon[i].setW(1);
             clippedPolygon[i] = clippedPolygon[i] * mvpMatrix_;
         }
         count = 3;
         for (int i = 0; i < planes_.size(); i++)
         {
             count = clipPolygon(result, clippedPolygon, planes_[i], count);
-            if (count == 0)
-                break;
+            if (count == 0) break;
             clippedPolygon = result;
         }
     }
     return count;
 }
 
-void Shader::geometry(const std::vector<Point<4, double>> &triangle)
+void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
 {
-    Point<3, double> point;
+    Vector3D<double> point;
     for (int i = 0; i < 3; i++)
     {
         point = triangle[i] * invVpMatrix_;
@@ -81,11 +81,11 @@ void Shader::geometry(const std::vector<Point<4, double>> &triangle)
 
 Color Shader::fragment(const std::vector<double> &barycentric) const
 {
-    MathVector<double> lightDir = lightDir_[0] * barycentric[2] + lightDir_[1] * barycentric[1] + lightDir_[2] * barycentric[0];
-    MathVector<double> eyeDir = eyeDir_[0] * barycentric[2] + eyeDir_[1] * barycentric[1] + eyeDir_[2] * barycentric[0];
+    Vector3D<double> lightDir(lightDir_[0] * barycentric[2] + lightDir_[1] * barycentric[1] + lightDir_[2] * barycentric[0]);
+    Vector3D<double> eyeDir(eyeDir_[0] * barycentric[2] + eyeDir_[1] * barycentric[1] + eyeDir_[2] * barycentric[0]);
     lightDir.normalize();
     eyeDir.normalize();
-    MathVector<double> halfWay = lightDir + eyeDir;
+    Vector3D<double> halfWay(lightDir + eyeDir);
     halfWay.normalize();
     double specComponent = std::pow(std::max(normal_ * halfWay, 0.0), material_.shininess_);
     double diffComponent = std::max(normal_ * lightDir, 0.0);
@@ -93,7 +93,7 @@ Color Shader::fragment(const std::vector<double> &barycentric) const
     return lightColor_ * (material_.specular_ * specComponent + material_.diffuse_ * diffComponent) +  material_.diffuse_ * ambient;
 }
 
-void Shader::findIntersection(Point<4, double> &C, const MathVector<double> &plane, const Point<4, double> &A, const Point<4, double> &B) const
+void Shader::findIntersection(Vector4D<double> &C, const Vector4D<double> &plane, const Vector4D<double> &A, const Vector4D<double> &B) const
 {
     double dA = plane * A;
     double dB = plane * B;
@@ -101,12 +101,12 @@ void Shader::findIntersection(Point<4, double> &C, const MathVector<double> &pla
     C = A + (B - A) * t;
 }
 
-int Shader::clipPolygon(std::vector<Point<4, double>> &result, const std::vector<Point<4, double>> &polygon, const MathVector<double> &plane, const int &length) const
+int Shader::clipPolygon(std::vector<Vector4D<double>> &result, const std::vector<Vector4D<double>> &polygon, const Vector4D<double> &plane, const int &length) const
 {
     int first = length - 1;
     int second;
     int count = 0;
-    Point<4, double> intersection;
+    Vector4D<double> intersection;
     for (int i = 0; i < length; i++)
     {
         second = i;

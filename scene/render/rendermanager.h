@@ -22,9 +22,9 @@ public:
     inline int getIndexByPosition(const int &x, const int &y) const { return static_cast<int>(objectsBuffer[y][x]); }
     void clearFrame();
 private:
-    void renderTriangle(std::vector<Point<3, double>> &triangle, const char &objectIndex, const Shader &shader);
-    void barycentric(std::vector<double> &barCoords, const std::vector<Point<3, double>> &triangle, const QPoint &P, const double &square);
-    void viewPort(Point<3, double> &point);
+    void renderTriangle(std::vector<Vector3D<double>> &triangle, const char &objectIndex, const Shader &shader);
+    void barycentric(std::vector<double> &barCoords, const std::vector<Vector3D<double>> &triangle, const QPoint &P, const double &square);
+    void viewPort(Vector3D<double> &point);
     int screenWidth;
     int screenHeight;
     std::vector<std::vector<double>> depthBuffer;

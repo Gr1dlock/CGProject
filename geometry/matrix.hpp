@@ -26,25 +26,6 @@ namespace GeometrySpace
     }
 
     template <typename T>
-    Matrix<T>::Matrix(const MathVector<T> &other)
-        : _rows(1), _cols(other.size())
-    {
-        try
-        {
-            data = new T*[1];
-            data[0] = new T[_cols];
-            for (int i = 0; i < _cols; i++)
-            {
-                data[0][i] = other[i];
-            }
-        }
-        catch (std::bad_alloc)
-        {
-            throw "Matrix allocation error";
-        }
-    }
-
-    template <typename T>
     Matrix<T>::Matrix(const Matrix<T> &other)
         : _rows(other.countRows()), _cols(other.countCols())
     {

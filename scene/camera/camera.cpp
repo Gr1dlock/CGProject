@@ -1,10 +1,6 @@
 #include "camera.h"
 
 Camera::Camera()
-    : direction_(3),
-      up_(3),
-      right_(3),
-      top_(3)
 {
 }
 
@@ -23,9 +19,9 @@ void Camera::updateCoords()
 {
     double yaw = radians(yaw_);
     double pitch = radians(pitch_);
-    direction_[0] = cos(yaw) * cos(pitch);
-    direction_[1] = sin(pitch);
-    direction_[2] = sin(yaw) * cos(pitch);
+    direction_.setX(cos(yaw) * cos(pitch));
+    direction_.setY(sin(pitch));
+    direction_.setZ(sin(yaw) * cos(pitch));
     direction_.normalize();
     right_ = top_ ^ direction_;
     right_.normalize();

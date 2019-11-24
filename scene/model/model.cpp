@@ -129,13 +129,13 @@ void Cube::computeTriangles(const int &nVerts)
 
 void Cube::computeNormals(const int &nVerts)
 {
-    MathVector<double> normal(3);
+    Vector3D<double> normal;
     for (int i = 0; i < nVerts - 2; i++)
     {
-        normal = MathVector<double>(vertices_[i + 1] - vertices_[0]) ^ MathVector<double>(vertices_[i + 2] - vertices_[i + 1]);
+        normal = Vector3D<double>(vertices_[i + 1] - vertices_[0]) ^ Vector3D<double>(vertices_[i + 2] - vertices_[i + 1]);
         normal.normalize();
         normals_.push_back(normal);
-        normal = MathVector<double>(vertices_[nVerts + i + 1] - vertices_[nVerts]) ^ MathVector<double>(vertices_[nVerts + i + 2] - vertices_[nVerts + i + 1]);
+        normal = Vector3D<double>(vertices_[nVerts + i + 1] - vertices_[nVerts]) ^ Vector3D<double>(vertices_[nVerts + i + 2] - vertices_[nVerts + i + 1]);
         normal.normalize();
         normals_.push_back(normal);
     }
@@ -147,10 +147,10 @@ void Cube::computeNormals(const int &nVerts)
         int fourth = nVerts + i + 1;
         second = second == nVerts ? 0 : second;
         fourth = fourth == nVerts * 2 ? nVerts : fourth;
-        normal = MathVector<double>(vertices_[second] - vertices_[first]) ^ MathVector<double>(vertices_[third] - vertices_[second]);
+        normal = Vector3D<double>(vertices_[second] - vertices_[first]) ^ Vector3D<double>(vertices_[third] - vertices_[second]);
         normal.normalize();
         normals_.push_back(normal);
-        normal = MathVector<double>(vertices_[third] - vertices_[first]) ^ MathVector<double>(vertices_[fourth] - vertices_[third]);
+        normal = Vector3D<double>(vertices_[third] - vertices_[first]) ^ Vector3D<double>(vertices_[fourth] - vertices_[third]);
         normal.normalize();
         normals_.push_back(normal);
     }
