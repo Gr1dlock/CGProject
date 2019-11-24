@@ -5,16 +5,16 @@ Color::Color()
 }
 
 Color::Color(const unsigned char &red, const unsigned char &green, const unsigned char &blue)
-    : r(red),
-      g(green),
-      b(blue)
+    : r_(red),
+      g_(green),
+      b_(blue)
 {
 }
 
 Color::Color(const unsigned char &red, const unsigned char &green, const unsigned char &blue, const float &alpha)
-    : r(red),
-      g(green),
-      b(blue),
+    : r_(red),
+      g_(green),
+      b_(blue),
       a(alpha)
 {
 }
@@ -22,35 +22,35 @@ Color::Color(const unsigned char &red, const unsigned char &green, const unsigne
 Color Color::operator + (const Color &other) const
 {
     Color result;
-    result.r = std::min(r + other.r, 255);
-    result.g = std::min(g + other.g, 255);
-    result.b = std::min(b + other.b, 255);
+    result.r_ = std::min(r_ + other.r_, 255);
+    result.g_ = std::min(g_ + other.g_, 255);
+    result.b_ = std::min(b_ + other.b_, 255);
     return result;
 }
 
 Color Color::operator - (const Color &other) const
 {
     Color result;
-    result.r = std::max(r - other.r, 0);
-    result.g = std::max(g - other.g, 0);
-    result.b = std::max(b - other.b, 0);
+    result.r_ = std::max(r_ - other.r_, 0);
+    result.g_ = std::max(g_ - other.g_, 0);
+    result.b_ = std::max(b_ - other.b_, 0);
     return result;
 }
 
 Color Color::operator *(const Color &other) const
 {
     Color result;
-    result.r = std::min(r * other.r, 255);
-    result.g = std::min(g * other.g, 255);
-    result.b = std::min(b * other.b, 255);
+    result.r_ = std::min(r_ * other.r_, 255);
+    result.g_ = std::min(g_ * other.g_, 255);
+    result.b_ = std::min(b_ * other.b_, 255);
     return result;
 }
 
-Color Color::operator * (float f) const
+Color Color::operator * (const double &f) const
 {
     Color result;
-    result.r = std::min(static_cast<int>(r * f), 255);
-    result.g = std::min(static_cast<int>(g * f), 255);
-    result.b = std::min(static_cast<int>(b * f), 255);
+    result.r_ = std::min(static_cast<int>(r_ * f), 255);
+    result.g_ = std::min(static_cast<int>(g_ * f), 255);
+    result.b_ = std::min(static_cast<int>(b_ * f), 255);
     return result;
 }

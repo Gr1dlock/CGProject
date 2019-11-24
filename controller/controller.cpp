@@ -198,17 +198,19 @@ void Controller::render()
     Camera camera = sceneContainer.getCamera();
     renderManager.clearFrame();
     Matrix<double> vpMatrix = cameraManager.getLookAt(camera) * cameraManager.getProjection(camera);
-    Matrix<double> mvpMatrix(4,4);
     Matrix<double> modelMatrix(4, 4);
     Shader shader;
     shader.setCameraPosition(camera.getPosition());
+    shader.setLightPosition(Point<3, double>(0, 150, 0));
     for (int i = 0; i < sceneContainer.countModels(); i++)
     {
         Cube model = sceneContainer.getModel(i);
         modelMatrix = modelManager.getModelView(model);
-        mvpMatrix = modelMatrix * vpMatrix;
-        shader.setMvpMatrix(mvpMatrix);
         shader.setModelMatrix(modelMatrix);
+        shader.setVpMatrix(vpMatrix);
+        Material material{ Color(255, 0, 0), Color(255, 255, 255), 128};
+        shader.setMaterial(material);
+        shader.setLightColor(Color(100, 100, 100));
         renderManager.renderModel(model, shader, i);
     }
 }

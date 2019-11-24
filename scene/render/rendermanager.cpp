@@ -14,33 +14,34 @@ RenderManager::RenderManager(QImage *frame, const int &sc_width, const int &sc_h
     frameBuffer->fill(Qt::black);
 }
 
-void RenderManager::renderModel(const BaseModel &model, const Shader &shader, const int &index)
+void RenderManager::renderModel(const BaseModel &model, Shader &shader, const int &index)
 {
-    double renderTime = 0;
+//    double renderTime = 0;
     char objectIndex = index;
     std::vector<Point<3, double>> triangle(3);
     std::vector<Point<4, double>> result(9);
     int count;
-    for (int k = 0; k < 100; k++)
-    {
-        clearFrame();
-        auto time1 = std::chrono::steady_clock::now();
+//    for (int k = 0; k < 100; k++)
+//    {
+//        clearFrame();
+//        auto time1 = std::chrono::steady_clock::now();
         for (int j = 0; j < model.countTriangles(); j++)
         {
             model.getTriangle(triangle, j);
             count = shader.vertex(result, triangle, model.getNormal(j));
             for (int i = 0; i < count - 2; i++)
             {
+                shader.geometry({result[0], result[i+1], result[i+2]});
                 triangle[2] = result[0];
                 triangle[1] = result[i + 1];
                 triangle[0] = result[i + 2];
-                renderTriangle(triangle, objectIndex);
+                renderTriangle(triangle, objectIndex, shader);
             }
         }
-        auto time2 = std::chrono::steady_clock::now();
-        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
-    }
-    qDebug() << "Render time: " << renderTime / 100;
+//        auto time2 = std::chrono::steady_clock::now();
+//        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
+//    }
+//    qDebug() << "Render time: " << renderTime / 100;
 }
 
 void RenderManager::clearFrame()
@@ -50,13 +51,14 @@ void RenderManager::clearFrame()
     objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
 }
 
-void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, const char &objectIndex)
+void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, const char &objectIndex, const Shader &shader)
 {
     for (auto &point: triangle)
     {
         viewPort(point);
         point.setZ(1 / point.z());
     }
+    Color color;
     double square = (triangle[0].y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) +
             (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - triangle[0].x());
     QPoint leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
@@ -78,15 +80,16 @@ void RenderManager::renderTriangle(std::vector<Point<3, double>> &triangle, cons
             barycentric(barCoords, triangle, QPoint(i, j), square);
             if (barCoords[0] >= -EPS && barCoords[1] >= -EPS && barCoords[2] >= -EPS)
             {
-                double z = barCoords[0] * triangle[0].z() + barCoords[1] * triangle[1].z() + barCoords[2] * triangle[2].z();
+                barCoords[0] *= triangle[0].z();
+                barCoords[1] *= triangle[1].z();
+                barCoords[2] *= triangle[2].z();
+                double z = barCoords[0] + barCoords[1] + barCoords[2];
                 if (z >= depthBuffer[j][i])
                 {
                     depthBuffer[j][i] = z;
                     objectsBuffer[j][i] = objectIndex;
-                    if (objectIndex == 0)
-                        frameBuffer->setPixel(i, j, qRgb(255, 0, 0));
-                    else
-                        frameBuffer->setPixel(i, j, qRgb(0, 255, 0));
+                    color = shader.fragment(barCoords);
+                    frameBuffer->setPixel(i, j, color.rgb());
                 }
             }
         }
