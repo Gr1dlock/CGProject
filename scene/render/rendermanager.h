@@ -23,7 +23,7 @@ public:
     void clearFrame();
 private:
     void renderTriangle(std::vector<Vector3D<double>> &triangle, const char &objectIndex, const Shader &shader);
-    void barycentric(std::vector<double> &barCoords, const std::vector<Vector3D<double>> &triangle, const QPoint &P, const double &square);
+    void barycentric(Vector3D<double> &barCoords, const std::vector<Vector3D<double>> &triangle, const QPoint &P, const double &square);
     void viewPort(Vector3D<double> &point);
     int screenWidth;
     int screenHeight;

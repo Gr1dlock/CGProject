@@ -78,10 +78,10 @@ void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
     }
 }
 
-Color Shader::fragment(const std::vector<double> &barycentric) const
+Color Shader::fragment(const Vector3D<double> &barycentric) const
 {
-    Vector3D<double> lightDir(lightDir_[2] * barycentric[2] + lightDir_[1] * barycentric[1] + lightDir_[0] * barycentric[0]);
-    Vector3D<double> eyeDir(eyeDir_[2] * barycentric[2] + eyeDir_[1] * barycentric[1] + eyeDir_[0] * barycentric[0]);
+    Vector3D<double> lightDir(lightDir_[2] * barycentric.z() + lightDir_[1] * barycentric.y() + lightDir_[0] * barycentric.x());
+    Vector3D<double> eyeDir(eyeDir_[2] * barycentric.z() + eyeDir_[1] * barycentric.y() + eyeDir_[0] * barycentric.x());
     lightDir.normalize();
     eyeDir.normalize();
     Vector3D<double> halfWay(lightDir + eyeDir);

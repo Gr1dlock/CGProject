@@ -59,8 +59,7 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
         point.setZ(1 / point.z());
     }
     Color color;
-    double square = (triangle[0].y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) +
-            (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - triangle[0].x());
+
     QPoint leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
     QPoint rightCorner(0, 0);
     for (const auto &point: triangle)
@@ -72,15 +71,30 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
     }
     rightCorner.setX(std::min(rightCorner.x(), screenWidth - 1));
     rightCorner.setY(std::min(rightCorner.y(),screenHeight - 1));
-    std::vector<double> barCoords(3);
+    Vector3D<double> barCoords;
+    Vector3D<double> startCoords;
+    Vector3D<double> stepsRow;
+    Vector3D<double> stepsCol;
+    double square = (triangle[0].y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) +
+            (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - triangle[0].x());
+
+    stepsRow.setX((triangle[2].y() - triangle[1].y()) / square);
+    stepsRow.setY((triangle[0].y() - triangle[2].y()) / square);
+    stepsRow.setZ(-stepsRow.x() - stepsRow.y());
+
+    stepsCol.setX((triangle[1].x() - triangle[2].x()) / square);
+    stepsCol.setY((triangle[2].x() - triangle[0].x())  / square);
+    stepsCol.setZ(-stepsCol.x() - stepsCol.y());
+
+    barycentric(startCoords, triangle, leftCorner, square);
     for (int i = leftCorner.x(); i <= rightCorner.x(); i++)
     {
+        barCoords = startCoords;
         for (int j = leftCorner.y(); j <= rightCorner.y(); j++)
         {
-            barycentric(barCoords, triangle, QPoint(i, j), square);
-            if (barCoords[0] >= -EPS && barCoords[1] >= -EPS && barCoords[2] >= -EPS)
+            if (barCoords.x() >= -EPS && barCoords.y() >= -EPS && barCoords.z() >= -EPS)
             {
-                double z = 1 / (barCoords[0] * triangle[0].z() + barCoords[1] * triangle[1].z() + barCoords[2] * triangle[2].z());
+                double z = 1 / (barCoords.x() * triangle[0].z() + barCoords.y() * triangle[1].z() + barCoords.z() * triangle[2].z());
                 if (z <= depthBuffer[j][i])
                 {
                     depthBuffer[j][i] = z;
@@ -89,8 +103,9 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
                     frameBuffer->setPixel(i, j, color.rgb());
                 }
             }
+            barCoords += stepsCol;
         }
-
+        startCoords += stepsRow;
     }
 }
 
@@ -101,11 +116,9 @@ void RenderManager::viewPort(Vector3D<double> &point)
     point.setZ((point.z() + 2) * 0.5);
 }
 
-void RenderManager::barycentric(std::vector<double> &barCoords, const std::vector<Vector3D<double>> &triangle, const QPoint &P, const double &square)
+void RenderManager::barycentric(Vector3D<double> &barCoords, const std::vector<Vector3D<double>> &triangle, const QPoint &P, const double &square)
 {
-    barCoords[0] = (P.y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) + (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - P.x());
-    barCoords[0] /= square;
-    barCoords[1] = (P.y() - triangle[0].y()) * (triangle[2].x() - triangle[0].x()) + (triangle[2].y() - triangle[0].y()) * (triangle[0].x() - P.x());
-    barCoords[1] /= square;
-    barCoords[2] = 1 - barCoords[0] - barCoords[1];
+    barCoords.setX(((P.y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) + (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - P.x())) / square);
+    barCoords.setY(((P.y() - triangle[0].y()) * (triangle[2].x() - triangle[0].x()) + (triangle[2].y() - triangle[0].y()) * (triangle[0].x() - P.x())) / square);
+    barCoords.setZ(1 - barCoords.x() - barCoords.y());
 }
