@@ -17,7 +17,6 @@ namespace GeometrySpace
     public:
         Matrix(const int &rows, const int &cols);
         Matrix(const Matrix<T> &other);
-        Matrix(const MathVector<T> &other);
         ~Matrix();
         inline int countRows() const { return _rows; }
         inline int countCols() const { return _cols; }

@@ -12,7 +12,7 @@ RenderWidget::RenderWidget(QWidget *parent) : QWidget(parent)
     movementTimer.setInterval(1000 / cameraSpeed);
     image = new QImage(widgetWidth, widgetHeight, QImage::Format_RGB32);
     setGeometry(20, 20, widgetWidth, widgetHeight);
-    CameraAttributes attributes { Point<3, double>(0,0,500), -90, 0, MathVector<double>(0,1,0),
+    CameraAttributes attributes { Vector3D<double>(0,0,500), -90, 0, Vector3D<double>(0,1,0),
         {90, 0.1, 1000, widgetWidth / static_cast<double>(widgetHeight)}};
     controller = Controller(image, widgetWidth, widgetHeight, attributes);
 
@@ -166,7 +166,7 @@ void RenderWidget::moveCamera()
 {
     CameraTransformation transformation(cameraMovement);
     controller.changeCamera(transformation);
-    Point<3, double> position = controller.getCameraPos();
+    Vector3D<double> position(controller.getCameraPos());
     emit cameraXChanged(position.x());
     emit cameraYChanged(position.y());
     emit cameraZChanged(position.z());

@@ -17,9 +17,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pitchSlider_sliderMoved(int position);
-    void on_pitchSpinBox_editingFinished();
-    void on_yawSlider_sliderMoved(int position);
+    void on_pitchSlider_actionTriggered(int action);
+    void on_pitchSpinBox_editingFinished();   
+    void on_yawSlider_actionTriggered(int action);
     void on_yawSpinBox_editingFinished();
     void updateYaw(double yaw);
     void updatePitch(double pitch);
@@ -39,15 +39,10 @@ private slots:
     void on_changeHeightSpinBox_editingFinished();
     void on_changeVertsSpinBox_editingFinished();
     void on_deleteModelButton_clicked();
-
     void on_rotateXButton_clicked();
-
     void on_rotateYButton_clicked();
-
     void on_rotateZButton_clicked();
-
     void on_transferButton_clicked();
-
     void on_clearSceneButton_clicked();
 
 private:

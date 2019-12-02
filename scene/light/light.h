@@ -10,9 +10,14 @@ class Light
 {
 public:
     Light();
+    Light(const Vector3D<double> &position, const Color &color);
+    inline void setPosition(const Vector3D<double> &position) { position_ = position; }
+    inline void setColor(const Color &color) { color_ = color; }
+    inline Color getColor() const { return color_; }
+    inline Vector3D<double> getPosition() const { return position_; }
 private:
-    Point<3, double> position;
-    Color color;
+    Vector3D<double> position_;
+    Color color_;
 };
 
 #endif // LIGHT_H

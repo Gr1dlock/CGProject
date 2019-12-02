@@ -1,8 +1,11 @@
 #include "shader.h"
-
+#include <QtDebug>
 Shader::Shader()
     : mvpMatrix_(4, 4),
-      modelMatrix_(4, 4)
+      invVpMatrix_(4, 4),
+      modelMatrix_(4, 4),
+      lightDir_(3),
+      eyeDir_(3)
 {
     planes_ = { {-1, 0, 0, 1},
                 {1, 0, 0, 1},
@@ -12,38 +15,85 @@ Shader::Shader()
                 {0, 0, -1, 1}};
 }
 
-Shader::Shader(const Matrix<double> &mvpMatrix, const Matrix<double> &modelMatrix, const Point<3, double> &cameraPosition)
+Shader::Shader(const Matrix<double> &vpMatrix, const Matrix<double> &modelMatrix,
+               const Vector3D<double> &cameraPosition, const Vector3D<double> &lightPosition)
     : Shader()
 {
-    mvpMatrix_ = mvpMatrix;
+    mvpMatrix_ = modelMatrix * vpMatrix;
     modelMatrix_ = modelMatrix;
+    invVpMatrix_ = vpMatrix;
+    invVpMatrix_.inverse();
     cameraPosition_ = cameraPosition;
+    lightPosition_ = lightPosition;
 }
 
-int Shader::vertex(std::vector<Point<4, double>> &result, const std::vector<Point<3, double>> &triangle, const MathVector<double> &normal) const
+void Shader::setVpMatrix(const Matrix<double> &vpMatrix)
+{
+    mvpMatrix_ = modelMatrix_ * vpMatrix;
+    invVpMatrix_ = vpMatrix;
+    invVpMatrix_.inverse();
+}
+
+void Shader::setMaterial(const Material &material)
+{
+    material_.diffuse_ = material.diffuse_;
+    material_.specular_ = material.specular_;
+    material_.shininess_ = material.shininess_;
+}
+
+int Shader::vertex(std::vector<Vector4D<double>> &result, const std::vector<Vector3D<double>> &triangle, const Vector3D<double> &normal)
 {
     int count = 0;
-    if (normal * modelMatrix_ * MathVector<double>(triangle[0] * modelMatrix_ - cameraPosition_) < EPS)
+    normal_ = normal * modelMatrix_;
+    if (normal_ * ((triangle[0] ^ modelMatrix_) - cameraPosition_) < EPS)
     {
-        std::vector<Point<4, double>> clippedPolygon(9);
+        std::vector<Vector4D<double>> clippedPolygon(9);
         for (int i = 0; i < 3; i++)
         {
             clippedPolygon[i] = triangle[i];
+            clippedPolygon[i].setW(1);
             clippedPolygon[i] = clippedPolygon[i] * mvpMatrix_;
         }
         count = 3;
         for (int i = 0; i < planes_.size(); i++)
         {
             count = clipPolygon(result, clippedPolygon, planes_[i], count);
-            if (count == 0)
-                break;
+            if (count == 0) break;
             clippedPolygon = result;
         }
     }
     return count;
 }
 
-void Shader::findIntersection(Point<4, double> &C, const MathVector<double> &plane, const Point<4, double> &A, const Point<4, double> &B) const
+void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
+{
+    Vector3D<double> point;
+    for (int i = 0; i < 3; i++)
+    {
+        point = triangle[i] * invVpMatrix_;
+        lightDir_[i] = lightPosition_ - point;
+        lightDir_[i].normalize();
+        qDebug() << lightDir_[i][0] << lightDir_[i][1] << lightDir_[i][2];
+        eyeDir_[i] = cameraPosition_ - point;
+        eyeDir_[i].normalize();
+    }
+}
+
+Color Shader::fragment(const std::vector<double> &barycentric) const
+{
+    Vector3D<double> lightDir(lightDir_[0] * barycentric[2] + lightDir_[1] * barycentric[1] + lightDir_[2] * barycentric[0]);
+    Vector3D<double> eyeDir(eyeDir_[0] * barycentric[2] + eyeDir_[1] * barycentric[1] + eyeDir_[2] * barycentric[0]);
+    lightDir.normalize();
+    eyeDir.normalize();
+    Vector3D<double> halfWay(lightDir + eyeDir);
+    halfWay.normalize();
+    double specComponent = std::pow(std::max(normal_ * halfWay, 0.0), material_.shininess_);
+    double diffComponent = std::max(normal_ * lightDir, 0.0);
+    double ambient = 0.1;
+    return lightColor_ * (material_.specular_ * specComponent + material_.diffuse_ * diffComponent) +  material_.diffuse_ * ambient;
+}
+
+void Shader::findIntersection(Vector4D<double> &C, const Vector4D<double> &plane, const Vector4D<double> &A, const Vector4D<double> &B) const
 {
     double dA = plane * A;
     double dB = plane * B;
@@ -51,12 +101,12 @@ void Shader::findIntersection(Point<4, double> &C, const MathVector<double> &pla
     C = A + (B - A) * t;
 }
 
-int Shader::clipPolygon(std::vector<Point<4, double>> &result, const std::vector<Point<4, double>> &polygon, const MathVector<double> &plane, const int &length) const
+int Shader::clipPolygon(std::vector<Vector4D<double>> &result, const std::vector<Vector4D<double>> &polygon, const Vector4D<double> &plane, const int &length) const
 {
     int first = length - 1;
     int second;
     int count = 0;
-    Point<4, double> intersection;
+    Vector4D<double> intersection;
     for (int i = 0; i < length; i++)
     {
         second = i;

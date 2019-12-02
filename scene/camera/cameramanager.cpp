@@ -39,9 +39,9 @@ void CameraManager::rotate(Camera &camera, const CameraRotation &rotation)
 
 void CameraManager::move(Camera &camera, const CameraMovement &movement)
 {
-    Point<3, double> position = camera.getPosition();
-    MathVector<double> direction = camera.getDirection();
-    MathVector<double> right = camera.getRight();
+    Vector3D<double> position(camera.getPosition());
+    Vector3D<double> direction(camera.getDirection());
+    Vector3D<double> right(camera.getRight());
     if (movement.forward)
         position += direction * speed_;
     if (movement.backward)
@@ -57,10 +57,10 @@ Matrix<double> CameraManager::getLookAt(const Camera &camera) const
 {
     Matrix<double> rotate(4,4);
     Matrix<double> translate(4,4);
-    MathVector<double> direction = camera.getDirection();
-    MathVector<double> up = camera.getUp();
-    MathVector<double> right = camera.getRight();
-    Point<3, double> position = camera.getPosition();
+    Vector3D<double> direction(camera.getDirection());
+    Vector3D<double> up(camera.getUp());
+    Vector3D<double> right(camera.getRight());
+    Vector3D<double> position(camera.getPosition());
     translate.makeIdentity();
     rotate[3][3] = 1;
     for (int i = 0; i < 3; i++)

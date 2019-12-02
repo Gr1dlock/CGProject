@@ -44,7 +44,7 @@ void ModelManager::rotateByZ(BaseModel &model, const double &angle) const
 Matrix<double> ModelManager::getModelView(const BaseModel &model) const
 {
     Matrix<double> translation(4, 4);
-    Point<3, double> translate = model.getTranslation();
+    Vector3D<double> translate(model.getTranslation());
     translation.makeIdentity();
     translation[3][0] = translate.x();
     translation[3][1] = translate.y();

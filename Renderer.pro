@@ -41,8 +41,6 @@ HEADERS += \
     geometry/mathvector.hpp \
     geometry/matrix.h \
     geometry/matrix.hpp \
-    geometry/point.h \
-    geometry/point.hpp \
     interface/mainwindow.h \ \
     interface/renderwidget.h \
     scene/light/light.h \

@@ -23,11 +23,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pitchSlider_sliderMoved(int position)
+void MainWindow::on_pitchSlider_actionTriggered(int action)
 {
+    int position = ui->pitchSlider->sliderPosition();
     ui->pitchSpinBox->setValue(position);
     CameraChange change{CameraParam::PITCH, static_cast<double>(position)};
     emit cameraParamChanged(change);
+    Q_UNUSED(action)
+}
+
+void MainWindow::on_yawSlider_actionTriggered(int action)
+{
+    int position = ui->yawSlider->sliderPosition();
+    ui->yawSpinBox->setValue(position);
+    CameraChange change{CameraParam::YAW, static_cast<double>(position)};
+    emit cameraParamChanged(change);
+    Q_UNUSED(action)
 }
 
 void MainWindow::on_pitchSpinBox_editingFinished()
@@ -37,12 +48,6 @@ void MainWindow::on_pitchSpinBox_editingFinished()
     emit cameraParamChanged(change);
 }
 
-void MainWindow::on_yawSlider_sliderMoved(int position)
-{
-    ui->yawSpinBox->setValue(position);
-    CameraChange change{CameraParam::YAW, static_cast<double>(position)};
-    emit cameraParamChanged(change);
-}
 
 void MainWindow::on_yawSpinBox_editingFinished()
 {

@@ -9,10 +9,10 @@
 namespace GeometrySpace
 {
     template<typename T>
-    class MathVector;
+    class Vector3D;
 
-    template<int size, typename T>
-    class Point;
+    template<typename T>
+    class Vector4D;
 
     template<typename T>
     class Matrix;
