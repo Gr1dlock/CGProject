@@ -73,7 +73,6 @@ void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
         point = triangle[i] * invVpMatrix_;
         lightDir_[i] = lightPosition_ - point;
         lightDir_[i].normalize();
-        qDebug() << lightDir_[i][0] << lightDir_[i][1] << lightDir_[i][2];
         eyeDir_[i] = cameraPosition_ - point;
         eyeDir_[i].normalize();
     }
@@ -81,8 +80,8 @@ void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
 
 Color Shader::fragment(const std::vector<double> &barycentric) const
 {
-    Vector3D<double> lightDir(lightDir_[0] * barycentric[2] + lightDir_[1] * barycentric[1] + lightDir_[2] * barycentric[0]);
-    Vector3D<double> eyeDir(eyeDir_[0] * barycentric[2] + eyeDir_[1] * barycentric[1] + eyeDir_[2] * barycentric[0]);
+    Vector3D<double> lightDir(lightDir_[2] * barycentric[2] + lightDir_[1] * barycentric[1] + lightDir_[0] * barycentric[0]);
+    Vector3D<double> eyeDir(eyeDir_[2] * barycentric[2] + eyeDir_[1] * barycentric[1] + eyeDir_[0] * barycentric[0]);
     lightDir.normalize();
     eyeDir.normalize();
     Vector3D<double> halfWay(lightDir + eyeDir);

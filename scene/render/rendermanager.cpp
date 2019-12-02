@@ -9,7 +9,7 @@ RenderManager::RenderManager(QImage *frame, const int &sc_width, const int &sc_h
       screenHeight(sc_height),
       frameBuffer(frame)
 {
-    depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 0));
+    depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 2));
     objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
     frameBuffer->fill(Qt::black);
 }
@@ -31,7 +31,6 @@ void RenderManager::renderModel(const BaseModel &model, Shader &shader, const in
             count = shader.vertex(result, triangle, model.getNormal(j));
             for (int i = 0; i < count - 2; i++)
             {
-                qDebug() << k;
                 shader.geometry({result[0], result[i+1], result[i+2]});
                 triangle[2] = result[0];
                 triangle[1] = result[i + 1];
@@ -48,7 +47,7 @@ void RenderManager::renderModel(const BaseModel &model, Shader &shader, const in
 void RenderManager::clearFrame()
 {
     frameBuffer->fill(Qt::black);
-    depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 0));
+    depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 2));
     objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
 }
 
@@ -81,11 +80,8 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
             barycentric(barCoords, triangle, QPoint(i, j), square);
             if (barCoords[0] >= -EPS && barCoords[1] >= -EPS && barCoords[2] >= -EPS)
             {
-                barCoords[0] *= triangle[0].z();
-                barCoords[1] *= triangle[1].z();
-                barCoords[2] *= triangle[2].z();
-                double z = barCoords[0] + barCoords[1] + barCoords[2];
-                if (z >= depthBuffer[j][i])
+                double z = 1 / (barCoords[0] * triangle[0].z() + barCoords[1] * triangle[1].z() + barCoords[2] * triangle[2].z());
+                if (z <= depthBuffer[j][i])
                 {
                     depthBuffer[j][i] = z;
                     objectsBuffer[j][i] = objectIndex;
