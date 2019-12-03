@@ -4,8 +4,7 @@ Shader::Shader()
     : mvpMatrix_(4, 4),
       invVpMatrix_(4, 4),
       modelMatrix_(4, 4),
-      lightDir_(3),
-      eyeDir_(3)
+      triangle_(3)
 {
     planes_ = { {-1, 0, 0, 1},
                 {1, 0, 0, 1},
@@ -67,21 +66,17 @@ int Shader::vertex(std::vector<Vector4D<double>> &result, const std::vector<Vect
 
 void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
 {
-    Vector3D<double> point;
     for (int i = 0; i < 3; i++)
     {
-        point = triangle[i] * invVpMatrix_;
-        lightDir_[i] = lightPosition_ - point;
-        lightDir_[i].normalize();
-        eyeDir_[i] = cameraPosition_ - point;
-        eyeDir_[i].normalize();
+        triangle_[i] = triangle[i] * invVpMatrix_;
     }
 }
 
-Color Shader::fragment(const Vector3D<double> &barycentric) const
+Color Shader::fragment(const Vector3D<double> &barycentric, const double &depth) const
 {
-    Vector3D<double> lightDir(lightDir_[2] * barycentric.z() + lightDir_[1] * barycentric.y() + lightDir_[0] * barycentric.x());
-    Vector3D<double> eyeDir(eyeDir_[2] * barycentric.z() + eyeDir_[1] * barycentric.y() + eyeDir_[0] * barycentric.x());
+    Vector3D<double> position((triangle_[2] * barycentric.x()  + triangle_[1] * barycentric.y() + triangle_[0] * barycentric.z()) * depth);
+    Vector3D<double> lightDir(lightPosition_ - position);
+    Vector3D<double> eyeDir(cameraPosition_ - position);
     lightDir.normalize();
     eyeDir.normalize();
     Vector3D<double> halfWay(lightDir + eyeDir);

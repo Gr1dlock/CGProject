@@ -208,9 +208,9 @@ void Controller::render()
         modelMatrix = modelManager.getModelView(model);
         shader.setModelMatrix(modelMatrix);
         shader.setVpMatrix(vpMatrix);
-        Material material{ Color(255, 0, 0), Color(255, 255, 255), 128};
+        Material material{ Color(1.0, 0, 0), Color(1.0, 1.0, 1.0), 128};
         shader.setMaterial(material);
-        shader.setLightColor(Color(100, 100, 100));
+        shader.setLightColor(Color(0.5, 0.5, 0.5));
         renderManager.renderModel(model, shader, i);
     }
 }

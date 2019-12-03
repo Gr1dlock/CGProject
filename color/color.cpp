@@ -4,14 +4,14 @@ Color::Color()
 {
 }
 
-Color::Color(const unsigned char &red, const unsigned char &green, const unsigned char &blue)
+Color::Color(const float &red, const float &green, const float &blue)
     : r_(red),
       g_(green),
       b_(blue)
 {
 }
 
-Color::Color(const unsigned char &red, const unsigned char &green, const unsigned char &blue, const float &alpha)
+Color::Color(const float &red, const float &green, const float &blue, const float &alpha)
     : r_(red),
       g_(green),
       b_(blue),
@@ -22,35 +22,35 @@ Color::Color(const unsigned char &red, const unsigned char &green, const unsigne
 Color Color::operator + (const Color &other) const
 {
     Color result;
-    result.r_ = std::min(r_ + other.r_, 255);
-    result.g_ = std::min(g_ + other.g_, 255);
-    result.b_ = std::min(b_ + other.b_, 255);
+    result.r_ = std::min(r_ + other.r_, 1.0f);
+    result.g_ = std::min(g_ + other.g_, 1.0f);
+    result.b_ = std::min(b_ + other.b_, 1.0f);
     return result;
 }
 
 Color Color::operator - (const Color &other) const
 {
     Color result;
-    result.r_ = std::max(r_ - other.r_, 0);
-    result.g_ = std::max(g_ - other.g_, 0);
-    result.b_ = std::max(b_ - other.b_, 0);
+    result.r_ = std::max(r_ - other.r_, 0.0f);
+    result.g_ = std::max(g_ - other.g_, 0.0f);
+    result.b_ = std::max(b_ - other.b_, 0.0f);
     return result;
 }
 
 Color Color::operator *(const Color &other) const
 {
     Color result;
-    result.r_ = std::min(r_ * other.r_, 255);
-    result.g_ = std::min(g_ * other.g_, 255);
-    result.b_ = std::min(b_ * other.b_, 255);
+    result.r_ = std::min(r_ * other.r_, 1.0f);
+    result.g_ = std::min(g_ * other.g_, 1.0f);
+    result.b_ = std::min(b_ * other.b_, 1.0f);
     return result;
 }
 
 Color Color::operator * (const double &f) const
 {
     Color result;
-    result.r_ = std::min(static_cast<int>(r_ * f), 255);
-    result.g_ = std::min(static_cast<int>(g_ * f), 255);
-    result.b_ = std::min(static_cast<int>(b_ * f), 255);
+    result.r_ = std::min(r_ * f, 1.0);
+    result.g_ = std::min(g_ * f, 1.0);
+    result.b_ = std::min(b_ * f, 1.0);
     return result;
 }

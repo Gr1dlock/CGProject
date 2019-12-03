@@ -71,13 +71,14 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
     }
     rightCorner.setX(std::min(rightCorner.x(), screenWidth - 1));
     rightCorner.setY(std::min(rightCorner.y(),screenHeight - 1));
-    Vector3D<double> barCoords;
     Vector3D<double> startCoords;
+    Vector3D<double> curCoords;
+    Vector3D<double> barCoords;
     Vector3D<double> stepsRow;
     Vector3D<double> stepsCol;
     double square = (triangle[0].y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) +
             (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - triangle[0].x());
-
+    double z;
     stepsRow.setX((triangle[2].y() - triangle[1].y()) / square);
     stepsRow.setY((triangle[0].y() - triangle[2].y()) / square);
     stepsRow.setZ(-stepsRow.x() - stepsRow.y());
@@ -89,21 +90,24 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
     barycentric(startCoords, triangle, leftCorner, square);
     for (int i = leftCorner.x(); i <= rightCorner.x(); i++)
     {
-        barCoords = startCoords;
+        curCoords = startCoords;
         for (int j = leftCorner.y(); j <= rightCorner.y(); j++)
         {
-            if (barCoords.x() >= -EPS && barCoords.y() >= -EPS && barCoords.z() >= -EPS)
+            if (curCoords.x() >= -EPS && curCoords.y() >= -EPS && curCoords.z() >= -EPS)
             {
-                double z = 1 / (barCoords.x() * triangle[0].z() + barCoords.y() * triangle[1].z() + barCoords.z() * triangle[2].z());
+                barCoords.setX(curCoords.x() * triangle[0].z());
+                barCoords.setY(curCoords.y() * triangle[1].z());
+                barCoords.setZ(curCoords.z() * triangle[2].z());
+                z = 1 / (barCoords.x() + barCoords.y() + barCoords.z());
                 if (z <= depthBuffer[j][i])
                 {
                     depthBuffer[j][i] = z;
                     objectsBuffer[j][i] = objectIndex;
-                    color = shader.fragment(barCoords);
+                    color = shader.fragment(barCoords, z);
                     frameBuffer->setPixel(i, j, color.rgb());
                 }
             }
-            barCoords += stepsCol;
+            curCoords += stepsCol;
         }
         startCoords += stepsRow;
     }
