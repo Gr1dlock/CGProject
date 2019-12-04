@@ -50,6 +50,7 @@ HEADERS += \
     scene/light/lightmanager.h \
     scene/model/basemodel.h \
     scene/model/modelmanager.h \
+    scene/render/baseshader.h \
     scene/render/rendermanager.h \
     scene/render/shader.h \
     scene/scenecontainer.h

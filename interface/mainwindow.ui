@@ -19,8 +19,8 @@
      <rect>
       <x>1070</x>
       <y>10</y>
-      <width>402</width>
-      <height>706</height>
+      <width>350</width>
+      <height>720</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -30,7 +30,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="modelTab">
      <attribute name="title">
@@ -76,18 +76,44 @@
             <property name="font">
              <font>
               <pointsize>18</pointsize>
+              <stylestrategy>PreferDefault</stylestrategy>
+              <kerning>false</kerning>
              </font>
             </property>
+            <property name="cursor">
+             <cursorShape>ArrowCursor</cursorShape>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::NoContextMenu</enum>
+            </property>
+            <property name="acceptDrops">
+             <bool>false</bool>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>1</number>
+            </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="paramsPage">
              <property name="geometry">
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>315</width>
-               <height>202</height>
+               <width>328</width>
+               <height>399</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -95,6 +121,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
              </property>
              <attribute name="label">
               <string>Параметры модели</string>
@@ -146,6 +175,8 @@
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="text">
@@ -203,6 +234,8 @@
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="mouseTracking">
@@ -250,6 +283,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="alignment">
@@ -313,6 +348,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="text">
@@ -353,6 +390,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="alignment">
@@ -418,6 +457,8 @@ p, li { white-space: pre-wrap; }
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -458,6 +499,8 @@ p, li { white-space: pre-wrap; }
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="alignment">
@@ -524,6 +567,8 @@ p, li { white-space: pre-wrap; }
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -564,6 +609,8 @@ p, li { white-space: pre-wrap; }
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="alignment">
@@ -602,8 +649,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>328</width>
+               <height>399</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -612,9 +659,864 @@ p, li { white-space: pre-wrap; }
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
              <attribute name="label">
               <string>Спектральные характеристики</string>
              </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_24">
+              <property name="spacing">
+               <number>6</number>
+              </property>
+              <property name="sizeConstraint">
+               <enum>QLayout::SetDefaultConstraint</enum>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>9</number>
+              </property>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_23">
+                <property name="spacing">
+                 <number>15</number>
+                </property>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_22">
+                  <item>
+                   <spacer name="horizontalSpacer_10">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>80</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_19">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Цвет поверхности:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_33">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>80</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_21">
+                  <item>
+                   <spacer name="horizontalSpacer_25">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>120</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QFrame" name="ModelColorFrame">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>50</width>
+                      <height>50</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>50</width>
+                      <height>50</height>
+                     </size>
+                    </property>
+                    <property name="palette">
+                     <palette>
+                      <active>
+                       <colorrole role="WindowText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Button">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Light">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Midlight">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Dark">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>127</red>
+                          <green>127</green>
+                          <blue>127</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Mid">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>170</red>
+                          <green>170</green>
+                          <blue>170</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Text">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="BrightText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ButtonText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Base">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Window">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Shadow">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="AlternateBase">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ToolTipBase">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>220</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ToolTipText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="PlaceholderText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="128">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                      </active>
+                      <inactive>
+                       <colorrole role="WindowText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Button">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Light">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Midlight">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Dark">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>127</red>
+                          <green>127</green>
+                          <blue>127</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Mid">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>170</red>
+                          <green>170</green>
+                          <blue>170</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Text">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="BrightText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ButtonText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Base">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Window">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Shadow">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="AlternateBase">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ToolTipBase">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>220</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ToolTipText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="PlaceholderText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="128">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                      </inactive>
+                      <disabled>
+                       <colorrole role="WindowText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>127</red>
+                          <green>127</green>
+                          <blue>127</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Button">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Light">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Midlight">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Dark">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>127</red>
+                          <green>127</green>
+                          <blue>127</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Mid">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>170</red>
+                          <green>170</green>
+                          <blue>170</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Text">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>127</red>
+                          <green>127</green>
+                          <blue>127</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="BrightText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ButtonText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>127</red>
+                          <green>127</green>
+                          <blue>127</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Base">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Window">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="Shadow">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="AlternateBase">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>255</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ToolTipBase">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>255</red>
+                          <green>255</green>
+                          <blue>220</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="ToolTipText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="255">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                       <colorrole role="PlaceholderText">
+                        <brush brushstyle="SolidPattern">
+                         <color alpha="128">
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>0</blue>
+                         </color>
+                        </brush>
+                       </colorrole>
+                      </disabled>
+                     </palette>
+                    </property>
+                    <property name="autoFillBackground">
+                     <bool>true</bool>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::Box</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Plain</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_26">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>120</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_23">
+                  <item>
+                   <spacer name="horizontalSpacer_31">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>72</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="chooseModelColorButton">
+                    <property name="font">
+                     <font>
+                      <pointsize>14</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Выбрать</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_38">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>72</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_44">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <item>
+                 <spacer name="horizontalSpacer_98">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>6</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_47">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Зеркальный коэффициент</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_123">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>6</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="changeSpecularSpinBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
+                   </font>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="decimals">
+                   <number>2</number>
+                  </property>
+                  <property name="minimum">
+                   <double>0.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>1.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_124">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>25</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_53">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <item>
+                 <spacer name="horizontalSpacer_125">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>24</width>
+                    <height>21</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_48">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Коэффициент блеска</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_126">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>21</width>
+                    <height>10</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="changeShineSpinBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>80</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
+                   </font>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="decimals">
+                   <number>2</number>
+                  </property>
+                  <property name="minimum">
+                   <double>0.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>1.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_127">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>25</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </widget>
             <widget class="QWidget" name="transformPage">
              <property name="geometry">
@@ -622,7 +1524,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>336</width>
-               <height>307</height>
+               <height>385</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -630,6 +1532,9 @@ p, li { white-space: pre-wrap; }
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
              </property>
              <attribute name="label">
               <string>Перемещение</string>
@@ -669,6 +1574,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="text">
@@ -726,6 +1633,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="mouseTracking">
@@ -773,6 +1682,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="alignment">
@@ -822,6 +1733,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="text">
@@ -879,6 +1792,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="mouseTracking">
@@ -926,6 +1841,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="alignment">
@@ -975,6 +1892,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="text">
@@ -1032,6 +1951,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="mouseTracking">
@@ -1079,6 +2000,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="alignment">
@@ -1128,6 +2051,8 @@ p, li { white-space: pre-wrap; }
                     <property name="font">
                      <font>
                       <pointsize>14</pointsize>
+                      <stylestrategy>PreferDefault</stylestrategy>
+                      <kerning>false</kerning>
                      </font>
                     </property>
                     <property name="text">
@@ -1175,6 +2100,8 @@ p, li { white-space: pre-wrap; }
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -1235,6 +2162,8 @@ p, li { white-space: pre-wrap; }
                       <property name="font">
                        <font>
                         <pointsize>14</pointsize>
+                        <stylestrategy>PreferDefault</stylestrategy>
+                        <kerning>false</kerning>
                        </font>
                       </property>
                       <property name="text">
@@ -1259,6 +2188,8 @@ p, li { white-space: pre-wrap; }
                       <property name="font">
                        <font>
                         <pointsize>14</pointsize>
+                        <stylestrategy>PreferDefault</stylestrategy>
+                        <kerning>false</kerning>
                        </font>
                       </property>
                       <property name="alignment">
@@ -1315,6 +2246,8 @@ p, li { white-space: pre-wrap; }
                       <property name="font">
                        <font>
                         <pointsize>14</pointsize>
+                        <stylestrategy>PreferDefault</stylestrategy>
+                        <kerning>false</kerning>
                        </font>
                       </property>
                       <property name="text">
@@ -1339,6 +2272,8 @@ p, li { white-space: pre-wrap; }
                       <property name="font">
                        <font>
                         <pointsize>14</pointsize>
+                        <stylestrategy>PreferDefault</stylestrategy>
+                        <kerning>false</kerning>
                        </font>
                       </property>
                       <property name="alignment">
@@ -1395,6 +2330,8 @@ p, li { white-space: pre-wrap; }
                       <property name="font">
                        <font>
                         <pointsize>14</pointsize>
+                        <stylestrategy>PreferDefault</stylestrategy>
+                        <kerning>false</kerning>
                        </font>
                       </property>
                       <property name="text">
@@ -1419,6 +2356,8 @@ p, li { white-space: pre-wrap; }
                       <property name="font">
                        <font>
                         <pointsize>14</pointsize>
+                        <stylestrategy>PreferDefault</stylestrategy>
+                        <kerning>false</kerning>
                        </font>
                       </property>
                       <property name="alignment">
@@ -1477,6 +2416,8 @@ p, li { white-space: pre-wrap; }
                   <property name="font">
                    <font>
                     <pointsize>14</pointsize>
+                    <stylestrategy>PreferDefault</stylestrategy>
+                    <kerning>false</kerning>
                    </font>
                   </property>
                   <property name="text">
@@ -3164,7 +4105,7 @@ p, li { white-space: pre-wrap; }
                    <property name="sizeHint" stdset="0">
                     <size>
                      <width>20</width>
-                     <height>105</height>
+                     <height>130</height>
                     </size>
                    </property>
                   </spacer>
@@ -3397,7 +4338,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>86</width>
+                       <width>130</width>
                        <height>10</height>
                       </size>
                      </property>
@@ -3527,10 +4468,10 @@ p, li { white-space: pre-wrap; }
                 <number>1</number>
                </property>
                <property name="minimum">
-                <double>-90.000000000000000</double>
+                <double>-89.000000000000000</double>
                </property>
                <property name="maximum">
-                <double>90.000000000000000</double>
+                <double>89.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -3582,10 +4523,10 @@ p, li { white-space: pre-wrap; }
                 <number>1</number>
                </property>
                <property name="minimum">
-                <double>-180.000000000000000</double>
+                <double>-179.000000000000000</double>
                </property>
                <property name="maximum">
-                <double>180.000000000000000</double>
+                <double>179.000000000000000</double>
                </property>
                <property name="value">
                 <double>-90.000000000000000</double>
@@ -3846,6 +4787,28 @@ p, li { white-space: pre-wrap; }
       <string>Освещение</string>
      </attribute>
      <layout class="QVBoxLayout" name="verticalLayout_22">
+      <property name="leftMargin">
+       <number>9</number>
+      </property>
+      <property name="rightMargin">
+       <number>9</number>
+      </property>
+      <item>
+       <spacer name="verticalSpacer_16">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>10</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item>
        <widget class="QGroupBox" name="groupBox_4">
         <property name="font">
@@ -4182,6 +5145,22 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
+       <spacer name="verticalSpacer_15">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>10</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QGroupBox" name="groupBox_5">
         <property name="font">
          <font>
@@ -4193,7 +5172,26 @@ p, li { white-space: pre-wrap; }
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_21">
          <item>
+          <spacer name="verticalSpacer_14">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>5</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_19">
+           <property name="spacing">
+            <number>0</number>
+           </property>
            <item>
             <spacer name="horizontalSpacer_11">
              <property name="orientation">
@@ -4211,23 +5209,23 @@ p, li { white-space: pre-wrap; }
             </spacer>
            </item>
            <item>
-            <widget class="QFrame" name="BGFrame">
+            <widget class="QFrame" name="LightFrame">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>25</horstretch>
-               <verstretch>25</verstretch>
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize">
               <size>
-               <width>25</width>
-               <height>25</height>
+               <width>50</width>
+               <height>50</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>25</width>
-               <height>25</height>
+               <width>50</width>
+               <height>50</height>
               </size>
              </property>
              <property name="palette">
@@ -4681,6 +5679,9 @@ p, li { white-space: pre-wrap; }
              <property name="frameShadow">
               <enum>QFrame::Plain</enum>
              </property>
+             <property name="lineWidth">
+              <number>2</number>
+             </property>
             </widget>
            </item>
            <item>
@@ -4713,14 +5714,14 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>7</width>
+               <width>70</width>
                <height>35</height>
               </size>
              </property>
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="chooseBGColorButton">
+            <widget class="QPushButton" name="chooseLightColorButton">
              <property name="font">
               <font>
                <pointsize>14</pointsize>
@@ -4741,7 +5742,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>7</width>
+               <width>70</width>
                <height>35</height>
               </size>
              </property>
@@ -4757,10 +5758,13 @@ p, li { white-space: pre-wrap; }
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>375</height>
+          <height>400</height>
          </size>
         </property>
        </spacer>

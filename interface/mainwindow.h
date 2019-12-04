@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QColorDialog>
 #include "interface/renderwidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -44,6 +45,10 @@ private slots:
     void on_rotateZButton_clicked();
     void on_transferButton_clicked();
     void on_clearSceneButton_clicked();
+
+    void on_chooseLightColorButton_clicked();
+
+    void on_chooseModelColorButton_clicked();
 
 private:
     Ui::MainWindow *ui;

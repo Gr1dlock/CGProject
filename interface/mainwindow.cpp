@@ -204,3 +204,25 @@ void MainWindow::on_clearSceneButton_clicked()
     renderWidget->deleteAllModels();
     ui->createButton->setEnabled(true);
 }
+
+void MainWindow::on_chooseLightColorButton_clicked()
+{
+    QColor color = QColorDialog::getColor(Qt::white, this,"Выберите цвет");
+    if (color.isValid())
+    {
+        QPalette palette;
+        palette.setColor(QPalette::Background, color);
+        ui->LightFrame->setPalette(palette);
+    }
+}
+
+void MainWindow::on_chooseModelColorButton_clicked()
+{
+    QColor color = QColorDialog::getColor(Qt::white, this,"Выберите цвет");
+    if (color.isValid())
+    {
+        QPalette palette;
+        palette.setColor(QPalette::Background, color);
+        ui->ModelColorFrame->setStyleSheet(QString("QFrame { background-color: rgb(%1, %2, %3);}").arg(color.red()).arg(color.green()).arg(color.blue()));
+    }
+}

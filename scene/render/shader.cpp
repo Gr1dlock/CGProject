@@ -4,7 +4,8 @@ Shader::Shader()
     : mvpMatrix_(4, 4),
       invVpMatrix_(4, 4),
       modelMatrix_(4, 4),
-      triangle_(3)
+      triangle_(3),
+      w_(3)
 {
     planes_ = { {-1, 0, 0, 1},
                 {1, 0, 0, 1},
@@ -69,12 +70,18 @@ void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
     for (int i = 0; i < 3; i++)
     {
         triangle_[i] = triangle[i] * invVpMatrix_;
+        w_[i] = 1 / triangle[i].w();
     }
 }
 
 Color Shader::fragment(const Vector3D<double> &barycentric, const double &depth) const
 {
-    Vector3D<double> position((triangle_[2] * barycentric.x()  + triangle_[1] * barycentric.y() + triangle_[0] * barycentric.z()) * depth);
+    Vector3D<double> bar(barycentric);
+    bar.setX(bar.x() * w_[0]);
+    bar.setY(bar.y() * w_[1]);
+    bar.setZ(bar.z() * w_[2]);
+    double w = 1 / (bar.x() + bar.y() + bar.z());
+    Vector3D<double> position((triangle_[0] * bar.x()  + triangle_[1] * bar.y() + triangle_[2] * bar.z()) * w);
     Vector3D<double> lightDir(lightPosition_ - position);
     Vector3D<double> eyeDir(cameraPosition_ - position);
     lightDir.normalize();

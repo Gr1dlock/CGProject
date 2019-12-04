@@ -16,32 +16,32 @@ RenderManager::RenderManager(QImage *frame, const int &sc_width, const int &sc_h
 
 void RenderManager::renderModel(const BaseModel &model, Shader &shader, const int &index)
 {
-    double renderTime = 0;
     char objectIndex = index;
     std::vector<Vector3D<double>> triangle(3);
     std::vector<Vector4D<double>> result(9);
     int count;
-    for (int k = 0; k < 100; k++)
-    {
-        clearFrame();
-        auto time1 = std::chrono::steady_clock::now();
+//    double renderTime = 0;
+//    for (int k = 0; k < 100; k++)
+//    {
+//        clearFrame();
+//        auto time1 = std::chrono::steady_clock::now();
         for (int j = 0; j < model.countTriangles(); j++)
         {
             model.getTriangle(triangle, j);
             count = shader.vertex(result, triangle, model.getNormal(j));
             for (int i = 0; i < count - 2; i++)
             {
-                shader.geometry({result[0], result[i+1], result[i+2]});
+                shader.geometry({result[i+2], result[i+1], result[0]});
                 triangle[2] = result[0];
                 triangle[1] = result[i + 1];
                 triangle[0] = result[i + 2];
                 renderTriangle(triangle, objectIndex, shader);
             }
         }
-        auto time2 = std::chrono::steady_clock::now();
-        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
-    }
-    qDebug() << "Render time: " << renderTime / 100;
+//        auto time2 = std::chrono::steady_clock::now();
+//        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
+//    }
+//    qDebug() << "Render time: " << renderTime / 100;
 }
 
 void RenderManager::clearFrame()
@@ -58,8 +58,6 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
         viewPort(point);
         point.setZ(1 / point.z());
     }
-    Color color;
-
     QPoint leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
     QPoint rightCorner(0, 0);
     for (const auto &point: triangle)
@@ -71,34 +69,40 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
     }
     rightCorner.setX(std::min(rightCorner.x(), screenWidth - 1));
     rightCorner.setY(std::min(rightCorner.y(),screenHeight - 1));
-    Vector3D<double> startCoords;
-    Vector3D<double> curCoords;
-    Vector3D<double> barCoords;
-    Vector3D<double> stepsRow;
-    Vector3D<double> stepsCol;
     double square = (triangle[0].y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) +
             (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - triangle[0].x());
-    double z;
-    stepsRow.setX((triangle[2].y() - triangle[1].y()) / square);
-    stepsRow.setY((triangle[0].y() - triangle[2].y()) / square);
-    stepsRow.setZ(-stepsRow.x() - stepsRow.y());
-
-    stepsCol.setX((triangle[1].x() - triangle[2].x()) / square);
-    stepsCol.setY((triangle[2].x() - triangle[0].x())  / square);
-    stepsCol.setZ(-stepsCol.x() - stepsCol.y());
-
-    barycentric(startCoords, triangle, leftCorner, square);
-    for (int i = leftCorner.x(); i <= rightCorner.x(); i++)
+    std::vector<std::thread> threads(8);
+    ThreadParams params;
+    params.startRow = leftCorner.y();
+    params.endRow = rightCorner.y();
+    double start = leftCorner.x();
+    double step = (rightCorner.x() - leftCorner.x()) / 8.0;
+    for (auto &thread: threads)
     {
-        curCoords = startCoords;
-        for (int j = leftCorner.y(); j <= rightCorner.y(); j++)
+        params.startCol = round(start);
+        params.endCol = round(start + step);
+        thread = std::thread(&RenderManager::renderBuffer, this, params, std::cref(triangle), std::cref(objectIndex), std::cref(shader), std::cref(square));
+        start += step;
+    }
+    for (auto &thread:threads)
+    {
+        thread.join();
+    }
+}
+
+void RenderManager::renderBuffer(ThreadParams params, const std::vector<Vector3D<double> > &triangle, const char &objectIndex, const Shader &shader, const double &square)
+{
+    Vector3D<double> barCoords;
+    double z;
+    Color color;
+    for (int i = params.startCol; i <= params.endCol; i++)
+    {
+        for (int j = params.startRow; j <= params.endRow; j++)
         {
-            if (curCoords.x() >= -EPS && curCoords.y() >= -EPS && curCoords.z() >= -EPS)
+            barycentric(barCoords, triangle, QPoint(i, j), square);
+            if (barCoords.x() >= -EPS && barCoords.y() >= -EPS && barCoords.z() >= -EPS)
             {
-                barCoords.setX(curCoords.x() * triangle[0].z());
-                barCoords.setY(curCoords.y() * triangle[1].z());
-                barCoords.setZ(curCoords.z() * triangle[2].z());
-                z = 1 / (barCoords.x() + barCoords.y() + barCoords.z());
+                z = 1 / (barCoords.x() * triangle[0].z() + barCoords.y() * triangle[1].z() + barCoords.z() * triangle[2].z());
                 if (z <= depthBuffer[j][i])
                 {
                     depthBuffer[j][i] = z;
@@ -107,9 +111,7 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
                     frameBuffer->setPixel(i, j, color.rgb());
                 }
             }
-            curCoords += stepsCol;
         }
-        startCoords += stepsRow;
     }
 }
 
