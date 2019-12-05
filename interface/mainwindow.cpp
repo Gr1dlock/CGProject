@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(cameraParamChanged(CameraChange)), renderWidget, SLOT(changeCamera(CameraChange)));
     connect(this, SIGNAL(modelParamChanged(ModelChange)), renderWidget, SLOT(changeModel(ModelChange)));
     connect(this, SIGNAL(modelMaterialChanged(Material)), renderWidget, SLOT(changeMaterial(Material)));
+    connect(this, SIGNAL(lightColorChanged(QColor)), renderWidget, SLOT(changeLight(QColor)));
+    connect(this, SIGNAL(lightPositionChanged(double, double, double)), renderWidget, SLOT(moveLight(double, double, double)));
     connect(renderWidget, SIGNAL(catchedNothing()), this, SLOT(switchCreatePage()));
     connect(renderWidget, SIGNAL(catchedModel(ModelAttributes, Material)), this, SLOT(switchConfigurePage(ModelAttributes, Material)));
 }
@@ -227,6 +229,7 @@ void MainWindow::on_chooseLightColorButton_clicked()
         QPalette palette;
         palette.setColor(QPalette::Background, color);
         ui->LightFrame->setPalette(palette);
+        emit lightColorChanged(color);
     }
 }
 
@@ -284,12 +287,16 @@ void MainWindow::on_changeShineSpinBox_editingFinished()
 
 void MainWindow::on_lightXSpinBox_editingFinished()
 {
-
+    emit lightPositionChanged(ui->lightXSpinBox->value(), ui->lightYSpinBox->value(), ui->lightZSpinBox->value());
 }
 
 void MainWindow::on_lightYSpinBox_editingFinished()
 {
-
+    emit lightPositionChanged(ui->lightXSpinBox->value(), ui->lightYSpinBox->value(), ui->lightZSpinBox->value());
 }
 
 
+void MainWindow::on_lightZSpinBox_editingFinished()
+{
+    emit lightPositionChanged(ui->lightXSpinBox->value(), ui->lightYSpinBox->value(), ui->lightZSpinBox->value());
+}

@@ -48,6 +48,8 @@ private slots:
     void changeCamera(CameraChange change);
     void changeModel(ModelChange change);
     void changeMaterial(Material material);
+    void moveLight(double x, double y, double z);
+    void changeLight(QColor);
 signals:
     void pitchChanged(double);
     void yawChanged(double);

@@ -45,21 +45,16 @@ private slots:
     void on_rotateZButton_clicked();
     void on_transferButton_clicked();
     void on_clearSceneButton_clicked();
-
     void on_chooseLightColorButton_clicked();
-
     void on_changeModelColorButton_clicked();
-
     void on_createModelColorButton_clicked();
-
     void on_changeSpecularSpinBox_editingFinished();
-
     void on_changeShineSpinBox_editingFinished();
-
     void on_lightXSpinBox_editingFinished();
-
     void on_lightYSpinBox_editingFinished();
 
+
+    void on_lightZSpinBox_editingFinished();
 
 private:
     Ui::MainWindow *ui;
@@ -69,6 +64,8 @@ signals:
     void cameraParamChanged(CameraChange);
     void modelParamChanged(ModelChange);
     void modelMaterialChanged(Material);
+    void lightPositionChanged(double, double, double);
+    void lightColorChanged(QColor);
 
 };
 #endif // MAINWINDOW_H

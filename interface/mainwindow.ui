@@ -30,7 +30,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="modelTab">
      <attribute name="title">
@@ -112,8 +112,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>328</width>
-               <height>399</height>
+               <width>318</width>
+               <height>202</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -649,8 +649,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>328</width>
-               <height>399</height>
+               <width>324</width>
+               <height>214</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -1531,7 +1531,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>336</width>
-               <height>385</height>
+               <height>307</height>
               </rect>
              </property>
              <property name="sizePolicy">

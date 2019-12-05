@@ -196,3 +196,17 @@ void RenderWidget::changeMaterial(Material material)
     update();
 }
 
+void RenderWidget::moveLight(double x, double y, double z)
+{
+    LightTransformation transformation(Vector3D<double> (x, y, z));
+    controller.changeLight(transformation);
+    update();
+}
+
+void RenderWidget::changeLight(QColor color)
+{
+    LightTransformation transformation(color);
+    controller.changeLight(transformation);
+    update();
+}
+
