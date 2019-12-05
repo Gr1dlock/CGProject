@@ -30,6 +30,9 @@ namespace GeometrySpace
         void transpose();
         void inverse();
         bool isZero();
+        Matrix<T> getCofactor(const int &p, const int &q, const int &n);
+        static T getDeterminant(Matrix<T> matrix, const int &n);
+        Matrix<T> adjoint();
     };
 }
 #endif // MATRIX_H

@@ -4,23 +4,65 @@
 
 Controller::Controller()
 {
-
+    shadowDir = { {1, 0, 0},
+                  {-1, 0, 0},
+                  {0, 1, 0},
+                  {0, -1, 0},
+                  {0, 0, 1},
+                  {0, 0, -1}
+                };
+    shadowUp = { {0, 1, 0},
+                 {0, 1, 0},
+                 {0, 0, -1},
+                 {0, 0, 1},
+                 {0, 1, 0},
+                 {0, 1, 0}
+               };
+    shadowRight = { {0, 0, -1},
+                    {0, 0, 1},
+                    {1, 0, 0},
+                    {1, 0, 0},
+                    {1, 0, 0},
+                    {-1, 0, 0}
+                  };
 }
 
-Controller::Controller(QImage *frame, const int &screen_width, const int &screen_height, const CameraAttributes &cameraAttributes)
+Controller::Controller(QImage *frame, const int &screen_width, const int &screen_height,
+                       const CameraAttributes &cameraAttributes, const LightAttributes &lightAttributes)
+    : Controller()
 {
     renderManager = RenderManager(frame, screen_width, screen_height);
     cameraManager = CameraManager(2, 0.25);
     Camera camera(cameraAttributes);
     sceneContainer.setCamera(camera);
-    render();
+    Light light(lightAttributes);
+    sceneContainer.setLight(light);
+    renderScene();
 }
 
-int Controller::addModel(const ModelAttributes &attributes)
+void Controller::changeLight(const LightTransformation &transformation)
 {
-    Cube model(attributes);
+    Light &light = sceneContainer.getLight();
+    if (std::holds_alternative<Vector3D<double>>(transformation))
+    {
+        Vector3D<double> position = std::get<Vector3D<double>>(transformation);
+        light.setPosition(position);
+        renderShadow();
+    }
+    else
+    {
+        QColor color = std::get<QColor>(transformation);
+        light.setColor(Color(color.redF(), color.greenF(), color.blueF()));
+    }
+    renderScene();
+}
+
+int Controller::addModel(const ModelAttributes &attributes, const Material &material)
+{
+    Cube model(attributes, material);
     sceneContainer.addModel(model);
-    render();
+    renderShadow();
+    renderScene();
     return sceneContainer.countModels();
 }
 
@@ -30,10 +72,17 @@ ModelAttributes Controller::getModelAttributes(const int &index)
     return model.getAttributes();
 }
 
+Material Controller::getModelMaterial(const int &index)
+{
+    const Cube &model = sceneContainer.getModel(index);
+    return model.getMaterial();
+}
+
 void Controller::deleteModel(const int &index)
 {
     sceneContainer.deleteModel(index);
-    render();
+    renderShadow();
+    renderScene();
 }
 
 void Controller::changeModel(const ModelTransformation &transformation, const int &index)
@@ -66,8 +115,9 @@ void Controller::changeModel(const ModelTransformation &transformation, const in
         {
             modelManager.translateByZ(model, movement.dz);
         }
+        renderShadow();
     }
-    else
+    else if (std::holds_alternative<ModelChange>(transformation))
     {
         ModelChange change = std::get<ModelChange>(transformation);
         switch (change.type)
@@ -87,8 +137,14 @@ void Controller::changeModel(const ModelTransformation &transformation, const in
         default:
             break;
         }
+        renderShadow();
     }
-    render();
+    else
+    {
+        Material material = std::get<Material>(transformation);
+        model.setMaterial(material);
+    }
+    renderScene();
 }
 
 double Controller::getYaw()
@@ -112,7 +168,8 @@ Vector3D<double> Controller::getCameraPos()
 void Controller::deleteAllModels()
 {
     sceneContainer.deleteAllModels();
-    render();
+    renderShadow();
+    renderScene();
 }
 
 void Controller::changeCamera(const CameraTransformation &transformation)
@@ -190,27 +247,58 @@ void Controller::changeCamera(const CameraTransformation &transformation)
             break;
         }
     }
-    render();
+    renderScene();
 }
 
-void Controller::render()
+void Controller::renderScene()
 {
     Camera camera = sceneContainer.getCamera();
+    Light light = sceneContainer.getLight();
     renderManager.clearFrame();
     Matrix<double> vpMatrix = cameraManager.getLookAt(camera) * cameraManager.getProjection(camera);
     Matrix<double> modelMatrix(4, 4);
     Shader shader;
     shader.setCameraPosition(camera.getPosition());
-    shader.setLightPosition(Vector3D<double>(0, 150, 0));
+    shader.setLightPosition(light.getPosition());
+    shader.setVpMatrix(vpMatrix);
     for (int i = 0; i < sceneContainer.countModels(); i++)
     {
         Cube model = sceneContainer.getModel(i);
         modelMatrix = modelManager.getModelView(model);
         shader.setModelMatrix(modelMatrix);
-        shader.setVpMatrix(vpMatrix);
-        Material material{ Color(1.0, 0, 0), Color(1.0, 1.0, 1.0), 128};
-        shader.setMaterial(material);
-        shader.setLightColor(Color(0.5, 0.5, 0.5));
-        renderManager.renderModel(model, shader, i);
+        shader.setMaterial(model.getMaterial());
+        shader.setLightColor(light.getColor());
+        renderManager.renderModel(shader, model, i);
     }
+}
+
+void Controller::renderShadow()
+{
+    Camera camera;
+    Light light = sceneContainer.getLight();
+    camera.setViewFrustrum({90, 0.1, 1000, 1});
+    renderManager.clearShadow();
+    Matrix<double> projection = cameraManager.getProjection(camera);
+    Matrix<double> modelMatrix(4, 4);
+    Matrix<double> vpMatrix(4, 4);
+    Shader shader;
+    shader.setCameraPosition(light.getPosition());
+    shader.setLightPosition(light.getPosition());
+    camera.setPosition(light.getPosition());
+    for (int j = 0; j < 6; j++)
+    {
+        camera.setDirection(shadowDir[j]);
+        camera.setUp(shadowUp[j]);
+        camera.setRight(shadowRight[j]);
+        vpMatrix = cameraManager.getLookAt(camera) * projection;
+        shader.setVpMatrix(vpMatrix);
+        for (int i = 0; i < sceneContainer.countModels(); i++)
+        {
+            Cube model = sceneContainer.getModel(i);
+            modelMatrix = modelManager.getModelView(model);
+            shader.setModelMatrix(modelMatrix);
+            renderManager.renderShadowModel(shader, model, j);
+        }
+    }
+
 }

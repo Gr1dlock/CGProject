@@ -4,6 +4,7 @@
 #include <vector>
 #include "scene/model/model.h"
 #include "scene/camera/camera.h"
+#include "scene/light/light.h"
 
 class SceneContainer
 {
@@ -11,7 +12,8 @@ public:
     SceneContainer() {}
     inline void setCamera(const Camera &camera) { camera_ = camera; }
     inline Camera &getCamera() { return camera_; }
-
+    inline void setLight(const Light &light) { light_ = light; }
+    inline Light &getLight() { return light_; }
     inline int countModels() const { return models_.size(); }
     inline Cube &getModel(const int &index) { return models_[index]; }
     inline void setModel(const Cube &model, const int &index) { models_[index] = model; }
@@ -22,6 +24,7 @@ public:
 private:
     std::vector<Cube> models_;
     Camera camera_;
+    Light light_;
 };
 
 #endif // SCENECONTAINER_H

@@ -19,7 +19,7 @@ class RenderWidget : public QWidget
 public:
     explicit RenderWidget(QWidget *parent = nullptr);
     void setCameraSpeed(const int &speed);
-    int addModel(const ModelAttributes &attributes);
+    int addModel(const ModelAttributes &attributes, const Material &material);
     void moveModel(const ModelMovement &movement);
     void deleteModel();
     void deleteAllModels();
@@ -47,13 +47,14 @@ private slots:
     void moveCamera();
     void changeCamera(CameraChange change);
     void changeModel(ModelChange change);
+    void changeMaterial(Material material);
 signals:
     void pitchChanged(double);
     void yawChanged(double);
     void cameraXChanged(double);
     void cameraYChanged(double);
     void cameraZChanged(double);
-    void catchedModel(ModelAttributes);
+    void catchedModel(ModelAttributes, Material);
     void catchedNothing();
 };
 

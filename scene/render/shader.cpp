@@ -4,6 +4,7 @@ Shader::Shader()
     : mvpMatrix_(4, 4),
       invVpMatrix_(4, 4),
       modelMatrix_(4, 4),
+      vpMatrix_(4, 4),
       triangle_(3),
       w_(3)
 {
@@ -21,6 +22,7 @@ Shader::Shader(const Matrix<double> &vpMatrix, const Matrix<double> &modelMatrix
 {
     mvpMatrix_ = modelMatrix * vpMatrix;
     modelMatrix_ = modelMatrix;
+    vpMatrix_ = vpMatrix;
     invVpMatrix_ = vpMatrix;
     invVpMatrix_.inverse();
     cameraPosition_ = cameraPosition;
@@ -29,9 +31,15 @@ Shader::Shader(const Matrix<double> &vpMatrix, const Matrix<double> &modelMatrix
 
 void Shader::setVpMatrix(const Matrix<double> &vpMatrix)
 {
-    mvpMatrix_ = modelMatrix_ * vpMatrix;
+    vpMatrix_ = vpMatrix;
     invVpMatrix_ = vpMatrix;
     invVpMatrix_.inverse();
+}
+
+void Shader::setModelMatrix(const Matrix<double> &modelMatrix)
+{
+    modelMatrix_ = modelMatrix;
+    mvpMatrix_ = modelMatrix_ * vpMatrix_;
 }
 
 void Shader::setMaterial(const Material &material)
@@ -74,7 +82,7 @@ void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
     }
 }
 
-Color Shader::fragment(const Vector3D<double> &barycentric, const double &depth) const
+Color Shader::fragment(const Vector3D<double> &barycentric, const ShadowCube &shadowCube) const
 {
     Vector3D<double> bar(barycentric);
     bar.setX(bar.x() * w_[0]);
@@ -82,16 +90,32 @@ Color Shader::fragment(const Vector3D<double> &barycentric, const double &depth)
     bar.setZ(bar.z() * w_[2]);
     double w = 1 / (bar.x() + bar.y() + bar.z());
     Vector3D<double> position((triangle_[0] * bar.x()  + triangle_[1] * bar.y() + triangle_[2] * bar.z()) * w);
-    Vector3D<double> lightDir(lightPosition_ - position);
-    Vector3D<double> eyeDir(cameraPosition_ - position);
-    lightDir.normalize();
-    eyeDir.normalize();
-    Vector3D<double> halfWay(lightDir + eyeDir);
-    halfWay.normalize();
-    double specComponent = std::pow(std::max(normal_ * halfWay, 0.0), material_.shininess_);
-    double diffComponent = std::max(normal_ * lightDir, 0.0);
+    Vector3D<double> lightDir(position - lightPosition_);
     double ambient = 0.1;
-    return lightColor_ * (material_.specular_ * specComponent + material_.diffuse_ * diffComponent) +  material_.diffuse_ * ambient;
+//    double depth = lightDir.module();
+//    qDebug() << depth << shadowCube.getDepthByVector(lightDir);
+    if (lightDir.module() - 5 < shadowCube.getDepthByVector(lightDir))
+    {
+        lightDir = lightDir * (-1);
+        Vector3D<double> eyeDir(cameraPosition_ - position);
+        lightDir.normalize();
+        eyeDir.normalize();
+        Vector3D<double> halfWay(lightDir + eyeDir);
+        halfWay.normalize();
+        double specComponent = std::pow(std::max(normal_ * halfWay, 0.0), material_.shininess_);
+        double diffComponent = std::max(normal_ * lightDir, 0.0);
+        return lightColor_ * (material_.specular_ * specComponent + material_.diffuse_ * diffComponent) +  material_.diffuse_ * ambient;
+    }
+    return material_.diffuse_ * ambient;
+}
+
+double Shader::countShadowDepth(Vector3D<double> &barycentric) const
+{
+    barycentric.setX(barycentric.x() * w_[0]);
+    barycentric.setY(barycentric.y() * w_[1]);
+    barycentric.setZ(barycentric.z() * w_[2]);
+    double w = 1 / (barycentric.x() + barycentric.y() + barycentric.z());
+    return (lightPosition_ - ((triangle_[0] * barycentric.x()  + triangle_[1] * barycentric.y() + triangle_[2] * barycentric.z()) * w)).module();
 }
 
 void Shader::findIntersection(Vector4D<double> &C, const Vector4D<double> &plane, const Vector4D<double> &A, const Vector4D<double> &B) const

@@ -4,6 +4,7 @@
 #include <vector>
 #include "geometry/geometry.hpp"
 #include "color/color.h"
+
 struct Material
 {
     Color diffuse_;
@@ -32,8 +33,10 @@ public:
     inline Matrix<double> getRotation() const { return rotation_; }
     inline void setTranslation(const Vector3D<double> &translation) { translation_ = translation; }
     inline void setRotation(const Matrix<double> &rotation) { rotation_ = rotation; }
+    inline void setMaterial(const Material &material) { material_ = material; }
     void getTriangle(std::vector<Vector3D<double>> &triangle, const int &num) const;
     inline Vector3D<double> getNormal(const int &index) const { return normals_[index]; }
+    inline Material getMaterial() const { return material_; }
     virtual void changeVerticesCount(const int &verts) = 0;
     virtual void changeTopLength(const double &length) = 0;
     virtual void changeBotLength(const double &length) = 0;

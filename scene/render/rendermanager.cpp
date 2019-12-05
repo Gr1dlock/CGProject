@@ -7,14 +7,15 @@ RenderManager::RenderManager()
 RenderManager::RenderManager(QImage *frame, const int &sc_width, const int &sc_height)
     : screenWidth(sc_width),
       screenHeight(sc_height),
-      frameBuffer(frame)
+      frameBuffer(frame),
+      shadowCube(1024, 1024)
 {
     depthBuffer = std::vector<std::vector<double>> (screenHeight, std::vector<double>(screenWidth, 2));
     objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
     frameBuffer->fill(Qt::black);
 }
 
-void RenderManager::renderModel(const BaseModel &model, Shader &shader, const int &index)
+void RenderManager::renderModel(Shader &shader, const BaseModel &model, const int &index)
 {
     char objectIndex = index;
     std::vector<Vector3D<double>> triangle(3);
@@ -41,7 +42,36 @@ void RenderManager::renderModel(const BaseModel &model, Shader &shader, const in
 //        auto time2 = std::chrono::steady_clock::now();
 //        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
 //    }
-//    qDebug() << "Render time: " << renderTime / 100;
+        //    qDebug() << "Render time: " << renderTime / 100;
+}
+
+void RenderManager::renderShadowModel(Shader &shader, const BaseModel &model, const int &bufferIndex)
+{
+    std::vector<Vector3D<double>> triangle(3);
+    std::vector<Vector4D<double>> result(9);
+    int count;
+    for (int j = 0; j < model.countTriangles(); j++)
+    {
+        model.getTriangle(triangle, j);
+        count = shader.vertex(result, triangle, model.getNormal(j));
+        for (int i = 0; i < count - 2; i++)
+        {
+            shader.geometry({result[i+2], result[i+1], result[0]});
+            triangle[2] = result[0];
+            triangle[1] = result[i + 1];
+            triangle[0] = result[i + 2];
+            renderShadowTriangle(triangle, bufferIndex, shader);
+        }
+    }
+//    QImage image(1024, 1024, QImage::Format_RGB32);
+//    for (int i = 0; i < 1024; i++)
+//    {
+//        for (int j = 0; j < 1024; j++)
+//        {
+//            image.setPixel(i, j, qRgb(255 * shadowCube.getDepthByIndex(3, j, i) / 1000, 255 * shadowCube.getDepthByIndex(3, j, i) / 1000, 255 * shadowCube.getDepthByIndex(3, j, i) / 1000));
+//        }
+//    }
+//    qDebug() << image.save("shadow.png");
 }
 
 void RenderManager::clearFrame()
@@ -55,7 +85,7 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
 {
     for (auto &point: triangle)
     {
-        viewPort(point);
+        viewPort(point, screenWidth, screenHeight);
         point.setZ(1 / point.z());
     }
     QPoint leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
@@ -81,7 +111,7 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
     {
         params.startCol = round(start);
         params.endCol = round(start + step);
-        thread = std::thread(&RenderManager::renderBuffer, this, params, std::cref(triangle), std::cref(objectIndex), std::cref(shader), std::cref(square));
+        thread = std::thread(&RenderManager::renderFrameBuffer, this, params, std::cref(triangle), std::cref(objectIndex), std::cref(shader), std::cref(square));
         start += step;
     }
     for (auto &thread:threads)
@@ -90,7 +120,46 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
     }
 }
 
-void RenderManager::renderBuffer(ThreadParams params, const std::vector<Vector3D<double> > &triangle, const char &objectIndex, const Shader &shader, const double &square)
+void RenderManager::renderShadowTriangle(std::vector<Vector3D<double> > &triangle, const int &bufferIndex, const Shader &shader)
+{
+    for (auto &point: triangle)
+    {
+        viewPort(point, shadowCube.getWidth(), shadowCube.getHeight());
+        point.setZ(1 / point.z());
+    }
+    QPoint leftCorner(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+    QPoint rightCorner(0, 0);
+    for (const auto &point: triangle)
+    {
+        rightCorner.setX(std::max(rightCorner.x(), static_cast<int>(point.x())));
+        rightCorner.setY(std::max(rightCorner.y(),static_cast<int>(point.y())));
+        leftCorner.setX(std::min(leftCorner.x(), static_cast<int>(point.x())));
+        leftCorner.setY(std::min(leftCorner.y(), static_cast<int>(point.y())));
+    }
+    rightCorner.setX(std::min(rightCorner.x(), shadowCube.getWidth() - 1));
+    rightCorner.setY(std::min(rightCorner.y(), shadowCube.getHeight() - 1));
+    double square = (triangle[0].y() - triangle[2].y()) * (triangle[1].x() - triangle[2].x()) +
+            (triangle[1].y() - triangle[2].y()) * (triangle[2].x() - triangle[0].x());
+    Vector3D<double> barCoords;
+    double z;
+    for (int i = leftCorner.x(); i <= rightCorner.x(); i++)
+    {
+        for (int j = leftCorner.y(); j <= rightCorner.y(); j++)
+        {
+            barycentric(barCoords, triangle, QPoint(i, j), square);
+            if (barCoords.x() >= -EPS && barCoords.y() >= -EPS && barCoords.z() >= -EPS)
+            {
+                z = shader.countShadowDepth(barCoords);
+                if (z <= shadowCube.getDepthByIndex(bufferIndex, i, j))
+                {
+                    shadowCube.setPixel(bufferIndex, i, j, z);
+                }
+            }
+        }
+    }
+}
+
+void RenderManager::renderFrameBuffer(ThreadParams params, const std::vector<Vector3D<double> > &triangle, const char &objectIndex, const Shader &shader, const double &square)
 {
     Vector3D<double> barCoords;
     double z;
@@ -107,7 +176,7 @@ void RenderManager::renderBuffer(ThreadParams params, const std::vector<Vector3D
                 {
                     depthBuffer[j][i] = z;
                     objectsBuffer[j][i] = objectIndex;
-                    color = shader.fragment(barCoords, z);
+                    color = shader.fragment(barCoords, shadowCube);
                     frameBuffer->setPixel(i, j, color.rgb());
                 }
             }
@@ -115,10 +184,10 @@ void RenderManager::renderBuffer(ThreadParams params, const std::vector<Vector3D
     }
 }
 
-void RenderManager::viewPort(Vector3D<double> &point)
+void RenderManager::viewPort(Vector3D<double> &point, const int &width, const int &height)
 {
-    point.setX((point.x() + 1) * 0.5 * screenWidth);
-    point.setY(screenHeight - (point.y() + 1) * 0.5 * screenHeight);
+    point.setX((point.x() + 1) * 0.5 * width);
+    point.setY(height - (point.y() + 1) * 0.5 * height);
     point.setZ((point.z() + 2) * 0.5);
 }
 

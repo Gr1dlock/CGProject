@@ -7,7 +7,7 @@ class Cube: public BaseModel
 {
 public:
     Cube();
-    Cube(const ModelAttributes &attributes);
+    Cube(const ModelAttributes &attributes, const Material &material);
     void changeVerticesCount(const int &nVerts) override;
     void changeTopLength(const double &length) override;
     void changeBotLength(const double &length) override;

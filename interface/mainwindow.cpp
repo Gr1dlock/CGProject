@@ -14,8 +14,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(renderWidget, SIGNAL(pitchChanged(double)), this, SLOT(updatePitch(double)));
     connect(this, SIGNAL(cameraParamChanged(CameraChange)), renderWidget, SLOT(changeCamera(CameraChange)));
     connect(this, SIGNAL(modelParamChanged(ModelChange)), renderWidget, SLOT(changeModel(ModelChange)));
+    connect(this, SIGNAL(modelMaterialChanged(Material)), renderWidget, SLOT(changeMaterial(Material)));
     connect(renderWidget, SIGNAL(catchedNothing()), this, SLOT(switchCreatePage()));
-    connect(renderWidget, SIGNAL(catchedModel(ModelAttributes)), this, SLOT(switchConfigurePage(ModelAttributes)));
+    connect(renderWidget, SIGNAL(catchedModel(ModelAttributes, Material)), this, SLOT(switchConfigurePage(ModelAttributes, Material)));
 }
 
 MainWindow::~MainWindow()
@@ -119,11 +120,17 @@ void MainWindow::on_sensSpinBox_editingFinished()
 void MainWindow::on_createButton_clicked()
 {
     ModelAttributes attributes;
+    Material material;
     attributes.lengthTop = ui->createTopLengthSpinBox->value();
     attributes.lengthBot = ui->createBotLengthSpinBox->value();
     attributes.height = ui->createHeightSpinBox->value();
     attributes.nVerts = ui->createVertsSpinBox->value();
-    int nModels = renderWidget->addModel(attributes);
+    material.shininess_ = ui->createShineSpinBox->value();
+    double specular = ui->createSpecularSpinBox->value();
+    material.specular_ = Color(specular, specular, specular);
+    QColor color = ui->createModelFrame->palette().color(QWidget::backgroundRole());
+    material.diffuse_ = Color(color.redF(), color.greenF(), color.blueF());
+    int nModels = renderWidget->addModel(attributes, material);
     if (nModels == MAX_MODELS)
     {
         ui->createButton->setEnabled(false);
@@ -135,13 +142,20 @@ void MainWindow::switchCreatePage()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::switchConfigurePage(ModelAttributes attributes)
+void MainWindow::switchConfigurePage(ModelAttributes attributes, Material material)
 {
     ui->stackedWidget->setCurrentIndex(0);
     ui->changeTopLengthSpinBox->setValue(attributes.lengthTop);
     ui->changeBotLengthSpinBox->setValue(attributes.lengthBot);
     ui->changeHeightSpinBox->setValue(attributes.height);
     ui->changeVertsSpinBox->setValue(attributes.nVerts);
+    ui->changeShineSpinBox->setValue(material.shininess_);
+    ui->changeSpecularSpinBox->setValue(material.specular_.r());
+    QPalette palette;
+    QColor color (material.diffuse_.rgb());
+    palette.setColor(QPalette::Background, color);
+    ui->changeModelFrame->setPalette(palette);
+    ui->changeModelFrame->setStyleSheet(QString("QFrame { background-color: rgb(%1, %2, %3);}").arg(color.red()).arg(color.green()).arg(color.blue()));
 }
 
 void MainWindow::on_changeTopLengthSpinBox_editingFinished()
@@ -216,13 +230,66 @@ void MainWindow::on_chooseLightColorButton_clicked()
     }
 }
 
-void MainWindow::on_chooseModelColorButton_clicked()
+void MainWindow::on_changeModelColorButton_clicked()
 {
     QColor color = QColorDialog::getColor(Qt::white, this,"Выберите цвет");
     if (color.isValid())
     {
         QPalette palette;
         palette.setColor(QPalette::Background, color);
-        ui->ModelColorFrame->setStyleSheet(QString("QFrame { background-color: rgb(%1, %2, %3);}").arg(color.red()).arg(color.green()).arg(color.blue()));
+        ui->changeModelFrame->setPalette(palette);
+        ui->changeModelFrame->setStyleSheet(QString("QFrame { background-color: rgb(%1, %2, %3);}").arg(color.red()).arg(color.green()).arg(color.blue()));
+        Material material;
+        material.shininess_ = ui->changeShineSpinBox->value();
+        double specular = ui->changeSpecularSpinBox->value();
+        material.specular_ = Color(specular, specular, specular);
+        material.diffuse_ = Color(color.redF(), color.greenF(), color.blueF());
+        emit modelMaterialChanged(material);
     }
 }
+
+void MainWindow::on_createModelColorButton_clicked()
+{
+    QColor color = QColorDialog::getColor(Qt::white, this,"Выберите цвет");
+    if (color.isValid())
+    {
+        QPalette palette;
+        palette.setColor(QPalette::Background, color);
+        ui->createModelFrame->setPalette(palette);
+        ui->createModelFrame->setStyleSheet(QString("QFrame { background-color: rgb(%1, %2, %3);}").arg(color.red()).arg(color.green()).arg(color.blue()));
+    }
+}
+
+void MainWindow::on_changeSpecularSpinBox_editingFinished()
+{
+    Material material;
+    QColor color = ui->changeModelFrame->palette().color(QWidget::backgroundRole());
+    material.shininess_ = ui->changeShineSpinBox->value();
+    double specular = ui->changeSpecularSpinBox->value();
+    material.specular_ = Color(specular, specular, specular);
+    material.diffuse_ = Color(color.redF(), color.greenF(), color.blueF());
+    emit modelMaterialChanged(material);
+}
+
+void MainWindow::on_changeShineSpinBox_editingFinished()
+{
+    Material material;
+    QColor color = ui->changeModelFrame->palette().color(QWidget::backgroundRole());
+    material.shininess_ = ui->changeShineSpinBox->value();
+    double specular = ui->changeSpecularSpinBox->value();
+    material.specular_ = Color(specular, specular, specular);
+    material.diffuse_ = Color(color.redF(), color.greenF(), color.blueF());
+    emit modelMaterialChanged(material);
+}
+
+void MainWindow::on_lightXSpinBox_editingFinished()
+{
+
+}
+
+void MainWindow::on_lightYSpinBox_editingFinished()
+{
+
+}
+
+

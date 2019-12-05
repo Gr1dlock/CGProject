@@ -6,11 +6,17 @@
 
 using namespace GeometrySpace;
 
+struct LightAttributes
+{
+    Vector3D<double> position;
+    Color color;
+};
+
 class Light
 {
 public:
     Light();
-    Light(const Vector3D<double> &position, const Color &color);
+    Light(const LightAttributes &attributes);
     inline void setPosition(const Vector3D<double> &position) { position_ = position; }
     inline void setColor(const Color &color) { color_ = color; }
     inline Color getColor() const { return color_; }

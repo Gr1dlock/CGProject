@@ -11,13 +11,6 @@ Color::Color(const float &red, const float &green, const float &blue)
 {
 }
 
-Color::Color(const float &red, const float &green, const float &blue, const float &alpha)
-    : r_(red),
-      g_(green),
-      b_(blue),
-      a(alpha)
-{
-}
 
 Color Color::operator + (const Color &other) const
 {

@@ -14,7 +14,8 @@ RenderWidget::RenderWidget(QWidget *parent) : QWidget(parent)
     setGeometry(20, 20, widgetWidth, widgetHeight);
     CameraAttributes attributes { Vector3D<double>(0,0,500), -90, 0, Vector3D<double>(0,1,0),
         {90, 0.1, 1000, widgetWidth / static_cast<double>(widgetHeight)}};
-    controller = Controller(image, widgetWidth, widgetHeight, attributes);
+    LightAttributes lightAttributes { {0, 200, 0}, Color(1.0, 1.0, 1.0) };
+    controller = Controller(image, widgetWidth, widgetHeight, attributes, lightAttributes);
 
     setFocusPolicy(Qt::StrongFocus);
 
@@ -28,9 +29,9 @@ void RenderWidget::setCameraSpeed(const int &speed)
     movementTimer.setInterval(1000 / cameraSpeed);
 }
 
-int RenderWidget::addModel(const ModelAttributes &attributes)
+int RenderWidget::addModel(const ModelAttributes &attributes, const Material &material)
 {
-    int nModels = controller.addModel(attributes);
+    int nModels = controller.addModel(attributes, material);
     update();
     return nModels;
 }
@@ -67,7 +68,8 @@ void RenderWidget::mousePressEvent(QMouseEvent *event)
         else
         {
             ModelAttributes attributes = controller.getModelAttributes(currentModel);
-            emit catchedModel(attributes);
+            Material material = controller.getModelMaterial(currentModel);
+            emit catchedModel(attributes, material);
         }
     }
     else if (event->button() == Qt::LeftButton)
@@ -183,6 +185,13 @@ void RenderWidget::changeCamera(CameraChange change)
 void RenderWidget::changeModel(ModelChange change)
 {
     ModelTransformation transformation(change);
+    controller.changeModel(transformation, currentModel);
+    update();
+}
+
+void RenderWidget::changeMaterial(Material material)
+{
+    ModelTransformation transformation(material);
     controller.changeModel(transformation, currentModel);
     update();
 }

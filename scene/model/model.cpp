@@ -5,11 +5,12 @@ Cube::Cube()
 {
 }
 
-Cube::Cube(const ModelAttributes &attributes)
+Cube::Cube(const ModelAttributes &attributes, const Material &material)
 {
     computeVertices(attributes);
     computeTriangles(attributes.nVerts);
     computeNormals(attributes.nVerts);
+    material_ = material;
 }
 
 void Cube::changeVerticesCount(const int &nVerts)

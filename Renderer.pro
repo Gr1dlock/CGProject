@@ -26,11 +26,11 @@ SOURCES += \
     scene/model/model.cpp \
     scene/camera/camera.cpp \
     scene/camera/cameramanager.cpp \
-    scene/light/lightmanager.cpp \
     scene/model/basemodel.cpp \
     scene/model/modelmanager.cpp \
     scene/render/rendermanager.cpp \
-    scene/render/shader.cpp
+    scene/render/shader.cpp \
+    scene/render/shadowcube.cpp
 
 HEADERS += \
     color/color.h \
@@ -47,12 +47,12 @@ HEADERS += \
     scene/model/model.h \
     scene/camera/camera.h \
     scene/camera/cameramanager.h \
-    scene/light/lightmanager.h \
     scene/model/basemodel.h \
     scene/model/modelmanager.h \
     scene/render/baseshader.h \
     scene/render/rendermanager.h \
     scene/render/shader.h \
+    scene/render/shadowcube.h \
     scene/scenecontainer.h
 
 FORMS += \

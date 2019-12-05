@@ -34,7 +34,7 @@ private slots:
     void on_sensSpinBox_editingFinished();
     void on_createButton_clicked();
     void switchCreatePage();
-    void switchConfigurePage(ModelAttributes attributes);
+    void switchConfigurePage(ModelAttributes attributes, Material material);
     void on_changeTopLengthSpinBox_editingFinished();
     void on_changeBotLengthSpinBox_editingFinished();
     void on_changeHeightSpinBox_editingFinished();
@@ -48,7 +48,18 @@ private slots:
 
     void on_chooseLightColorButton_clicked();
 
-    void on_chooseModelColorButton_clicked();
+    void on_changeModelColorButton_clicked();
+
+    void on_createModelColorButton_clicked();
+
+    void on_changeSpecularSpinBox_editingFinished();
+
+    void on_changeShineSpinBox_editingFinished();
+
+    void on_lightXSpinBox_editingFinished();
+
+    void on_lightYSpinBox_editingFinished();
+
 
 private:
     Ui::MainWindow *ui;
@@ -57,6 +68,7 @@ private:
 signals:
     void cameraParamChanged(CameraChange);
     void modelParamChanged(ModelChange);
+    void modelMaterialChanged(Material);
 
 };
 #endif // MAINWINDOW_H

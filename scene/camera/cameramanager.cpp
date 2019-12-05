@@ -18,19 +18,19 @@ void CameraManager::rotate(Camera &camera, const CameraRotation &rotation)
     pitch += rotation.dPitch * sensitivity_;
     if (pitch >= 90)
     {
-        pitch = 89;
+        pitch = 90;
     }
     else if (pitch <= -90)
     {
-        pitch = -89;
+        pitch = -90;
     }
     if (yaw >= 180)
     {
-        yaw = -179;
+        yaw = -180;
     }
     else if (yaw <= -180)
     {
-        yaw = 179;
+        yaw = 180;
     }
     camera.setYaw(yaw);
     camera.setPitch(pitch);
