@@ -59,10 +59,38 @@ void Controller::changeLight(const LightTransformation &transformation)
 
 int Controller::addModel(const ModelAttributes &attributes, const Material &material)
 {
+    qDebug() << "1 element";
+
     Cube model(attributes, material);
     sceneContainer.addModel(model);
+
     renderShadow();
     renderScene();
+    sceneContainer.deleteAllModels();
+    for (int i = 10; i < 100; i+=10)
+    {
+        qDebug() << i << "elements";
+        for (int j = 0; j < i; j++)
+        {
+            Cube model(attributes, material);
+            sceneContainer.addModel(model);
+        }
+        renderShadow();
+        renderScene();
+        sceneContainer.deleteAllModels();
+    }
+    for (int i = 100; i < 1100; i+=100)
+    {
+        qDebug() << i << "elements";
+        for (int j = 0; j < i; j++)
+        {
+            Cube model(attributes, material);
+            sceneContainer.addModel(model);
+        }
+        renderShadow();
+        renderScene();
+        sceneContainer.deleteAllModels();
+    }
     return sceneContainer.countModels();
 }
 
@@ -252,11 +280,11 @@ void Controller::changeCamera(const CameraTransformation &transformation)
 
 void Controller::renderScene()
 {
-//    double renderTime = 0;
-//    for (int k = 0; k < 100; k++)
-//    {
-//        renderManager.clearFrame();
-//        auto time1 = std::chrono::steady_clock::now();
+    double renderTime = 0;
+    for (int k = 0; k < 100; k++)
+    {
+        renderManager.clearFrame();
+        auto time1 = std::chrono::steady_clock::now();
         Camera camera = sceneContainer.getCamera();
         Light light = sceneContainer.getLight();
         renderManager.clearFrame();
@@ -267,15 +295,22 @@ void Controller::renderScene()
         sceneShader.setCameraPosition(camera.getPosition());
         sceneShader.setLightPosition(light.getPosition());
         sceneShader.setVpMatrix(vpMatrix);
+        auto time2 = std::chrono::steady_clock::now();
+        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
         for (int i = 0; i < sceneContainer.countModels(); i++)
         {
+            auto time3 = std::chrono::steady_clock::now();
             model = sceneContainer.getModel(i);
             modelMatrix = modelManager.getModelView(model);
             sceneShader.setModelMatrix(modelMatrix);
             sceneShader.setMaterial(model.getMaterial());
             sceneShader.setLightColor(light.getColor());
             renderManager.renderModel(sceneShader, model, i);
+            auto time4 = std::chrono::steady_clock::now();
+            renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time4 - time3).count() / 1000.0;
+            renderManager.clearFrame();
         }
+        auto time5 = std::chrono::steady_clock::now();
         LightShader lightShader;
         lightShader.setCameraPosition(camera.getPosition());
         lightShader.setVpMatrix(vpMatrix);
@@ -286,10 +321,10 @@ void Controller::renderScene()
         renderManager.renderModel(lightShader, model, -1);
         std::vector<Vector3D<double>> system {camera.getRight(), camera.getUp(), camera.getDirection()};
         renderManager.renderCoordinateSystem(system);
-//        auto time2 = std::chrono::steady_clock::now();
-//        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
-//    }
-//    qDebug() << "Render time: " << renderTime / 100;
+        auto time6 = std::chrono::steady_clock::now();
+        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time6 - time5).count() / 1000.0;
+    }
+    qDebug() << "Render time: " << renderTime / 100;
 }
 
 void Controller::renderShadow()

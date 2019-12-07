@@ -91,7 +91,9 @@ double ShadowCube::getDepthByVector(const Vector3D<double> &vec) const
     // Convert range from -1 to 1 to 0 to 1
     u = 0.5 * (u / maxAxis + 1.0) * bufferWidth;
     v = bufferHeight - 0.5 * (v / maxAxis + 1.0) * bufferHeight;
-    return shadowBuffers[index][v][u];
+    int ui = std::min(static_cast<int>(u), bufferWidth - 1);
+    int vi = std::min(static_cast<int>(v), bufferHeight - 1);
+    return shadowBuffers[index][vi][ui];
 }
 
 void ShadowCube::clear()

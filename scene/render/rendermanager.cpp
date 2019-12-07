@@ -1,5 +1,7 @@
 #include "rendermanager.h"
 
+#include <QDebug>
+
 RenderManager::RenderManager()
 {
 }
