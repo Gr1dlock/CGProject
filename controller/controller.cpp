@@ -252,24 +252,44 @@ void Controller::changeCamera(const CameraTransformation &transformation)
 
 void Controller::renderScene()
 {
-    Camera camera = sceneContainer.getCamera();
-    Light light = sceneContainer.getLight();
-    renderManager.clearFrame();
-    Matrix<double> vpMatrix = cameraManager.getLookAt(camera) * cameraManager.getProjection(camera);
-    Matrix<double> modelMatrix(4, 4);
-    Shader shader;
-    shader.setCameraPosition(camera.getPosition());
-    shader.setLightPosition(light.getPosition());
-    shader.setVpMatrix(vpMatrix);
-    for (int i = 0; i < sceneContainer.countModels(); i++)
-    {
-        Cube model = sceneContainer.getModel(i);
+//    double renderTime = 0;
+//    for (int k = 0; k < 100; k++)
+//    {
+//        renderManager.clearFrame();
+//        auto time1 = std::chrono::steady_clock::now();
+        Camera camera = sceneContainer.getCamera();
+        Light light = sceneContainer.getLight();
+        renderManager.clearFrame();
+        Matrix<double> vpMatrix = cameraManager.getLookAt(camera) * cameraManager.getProjection(camera);
+        Matrix<double> modelMatrix(4, 4);
+        SceneShader sceneShader;
+        Cube model;
+        sceneShader.setCameraPosition(camera.getPosition());
+        sceneShader.setLightPosition(light.getPosition());
+        sceneShader.setVpMatrix(vpMatrix);
+        for (int i = 0; i < sceneContainer.countModels(); i++)
+        {
+            model = sceneContainer.getModel(i);
+            modelMatrix = modelManager.getModelView(model);
+            sceneShader.setModelMatrix(modelMatrix);
+            sceneShader.setMaterial(model.getMaterial());
+            sceneShader.setLightColor(light.getColor());
+            renderManager.renderModel(sceneShader, model, i);
+        }
+        LightShader lightShader;
+        lightShader.setCameraPosition(camera.getPosition());
+        lightShader.setVpMatrix(vpMatrix);
+        model = light.getModel();
         modelMatrix = modelManager.getModelView(model);
-        shader.setModelMatrix(modelMatrix);
-        shader.setMaterial(model.getMaterial());
-        shader.setLightColor(light.getColor());
-        renderManager.renderModel(shader, model, i);
-    }
+        lightShader.setModelMatrix(modelMatrix);
+        lightShader.setLightColor(light.getColor());
+        renderManager.renderModel(lightShader, model, -1);
+        std::vector<Vector3D<double>> system {camera.getRight(), camera.getUp(), camera.getDirection()};
+        renderManager.renderCoordinateSystem(system);
+//        auto time2 = std::chrono::steady_clock::now();
+//        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
+//    }
+//    qDebug() << "Render time: " << renderTime / 100;
 }
 
 void Controller::renderShadow()
@@ -281,7 +301,7 @@ void Controller::renderShadow()
     Matrix<double> projection = cameraManager.getProjection(camera);
     Matrix<double> modelMatrix(4, 4);
     Matrix<double> vpMatrix(4, 4);
-    Shader shader;
+    SceneShader shader;
     shader.setCameraPosition(light.getPosition());
     shader.setLightPosition(light.getPosition());
     camera.setPosition(light.getPosition());

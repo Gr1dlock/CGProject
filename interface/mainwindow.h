@@ -52,8 +52,6 @@ private slots:
     void on_changeShineSpinBox_editingFinished();
     void on_lightXSpinBox_editingFinished();
     void on_lightYSpinBox_editingFinished();
-
-
     void on_lightZSpinBox_editingFinished();
 
 private:

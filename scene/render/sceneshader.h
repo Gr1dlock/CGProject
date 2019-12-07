@@ -1,18 +1,17 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef SCENE_SHADER_H
+#define SCENE_SHADER_H
 
-#include <vector>
-#include "geometry/geometry.hpp"
+#include "scene/render/baseshader.h"
 #include "scene/model/basemodel.h"
-#include "scene/render/shadowcube.h"
+
 
 using namespace GeometrySpace;
 
-class Shader
+class SceneShader: public BaseShader
 {
 public:
-    Shader();
-    Shader(const Matrix<double> &mvpMatrix, const Matrix<double> &modelMatrix,
+    SceneShader();
+    SceneShader(const Matrix<double> &mvpMatrix, const Matrix<double> &modelMatrix,
            const Vector3D<double> &cameraPosition, const Vector3D<double> &lightPosition);
     void setVpMatrix(const Matrix<double> &vpMatrix);
     void setModelMatrix(const Matrix<double> &modelMatrix);
@@ -25,10 +24,11 @@ public:
     inline Matrix<double> getMVPMatrix() const { return mvpMatrix_; }
     inline Matrix<double> getModelMatrix() const { return modelMatrix_; }
     inline Matrix<double> getVPMatrix() const { return vpMatrix_; }
-    int vertex(std::vector<Vector4D<double>> &result, const std::vector<Vector3D<double>> &triangle, const Vector3D<double> &normal);
-    void geometry(const std::vector<Vector4D<double>> &triangle);
-    Color fragment(const Vector3D<double> &barycentric, const ShadowCube &shadowCube) const;
+    int vertex(std::vector<Vector4D<double>> &result, const std::vector<Vector3D<double>> &triangle, const Vector3D<double> &normal) override;
+    void geometry(const std::vector<Vector4D<double>> &triangle) override;
+    Color fragment(const Vector3D<double> &barycentric, const ShadowCube &shadowCube) const override;
     double countShadowDepth(Vector3D<double> &barycentric) const;
+    ~SceneShader() override {}
 private:
     inline bool pointIsVisible(const Vector4D<double> &plane, const Vector4D<double> &point) const { return (plane * point) > -EPS; }
     void findIntersection(Vector4D<double> &C, const Vector4D<double> &plane, const Vector4D<double> &A, const Vector4D<double> &B) const;
@@ -47,4 +47,4 @@ private:
     Material material_;
 };
 
-#endif // SHADER_H
+#endif // SCENE_SHADER_H

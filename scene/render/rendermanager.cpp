@@ -15,7 +15,7 @@ RenderManager::RenderManager(QImage *frame, const int &sc_width, const int &sc_h
     frameBuffer->fill(Qt::black);
 }
 
-void RenderManager::renderModel(Shader &shader, const BaseModel &model, const int &index)
+void RenderManager::renderModel(BaseShader &shader, const BaseModel &model, const int &index)
 {
     char objectIndex = index;
     std::vector<Vector3D<double>> triangle(3);
@@ -45,7 +45,7 @@ void RenderManager::renderModel(Shader &shader, const BaseModel &model, const in
         //    qDebug() << "Render time: " << renderTime / 100;
 }
 
-void RenderManager::renderShadowModel(Shader &shader, const BaseModel &model, const int &bufferIndex)
+void RenderManager::renderShadowModel(SceneShader &shader, const BaseModel &model, const int &bufferIndex)
 {
     std::vector<Vector3D<double>> triangle(3);
     std::vector<Vector4D<double>> result(9);
@@ -63,15 +63,41 @@ void RenderManager::renderShadowModel(Shader &shader, const BaseModel &model, co
             renderShadowTriangle(triangle, bufferIndex, shader);
         }
     }
-//    QImage image(1024, 1024, QImage::Format_RGB32);
-//    for (int i = 0; i < 1024; i++)
-//    {
-//        for (int j = 0; j < 1024; j++)
-//        {
-//            image.setPixel(i, j, qRgb(255 * shadowCube.getDepthByIndex(3, j, i) / 1000, 255 * shadowCube.getDepthByIndex(3, j, i) / 1000, 255 * shadowCube.getDepthByIndex(3, j, i) / 1000));
-//        }
-//    }
-//    qDebug() << image.save("shadow.png");
+}
+
+void RenderManager::renderCoordinateSystem(std::vector<Vector3D<double>> &system)
+{
+    std::vector<QColor> colors{qRgb(26, 143, 17), qRgb(186, 19, 7), qRgb(11, 57, 143)};
+    std::vector<char> letters{'X', 'Y', 'Z'};
+    if (system[0].z() > system[1].z())
+    {
+        qSwap(system[0], system[1]);
+        qSwap(colors[0], colors[1]);
+        qSwap(letters[0], letters[1]);
+    }
+    if (system[1].z() > system[2].z())
+    {
+        qSwap(system[1], system[2]);
+        qSwap(colors[1], colors[2]);
+        qSwap(letters[1], letters[2]);
+    }
+    if (system[0].z() > system[1].z())
+    {
+        qSwap(system[0], system[1]);
+        qSwap(colors[0], colors[1]);
+        qSwap(letters[0], letters[1]);
+    }
+    QPainter painter(frameBuffer);
+    QFont font = painter.font();
+    font.setPixelSize(18);
+    painter.setFont(font);
+    QPoint center(110, screenHeight - 110);
+    for (int i = 2; i >= 0; i--)
+    {
+        painter.setPen(QPen(colors[i], 5));
+        painter.drawLine(center.x(), center.y(), center.x() + system[i].x() * 80, center.y() - system[i].y() * 80);
+        painter.drawText(center.x() + system[i].x() * 100, center.y() - system[i].y() * 100, QString(letters[i]));
+    }
 }
 
 void RenderManager::clearFrame()
@@ -81,7 +107,7 @@ void RenderManager::clearFrame()
     objectsBuffer = std::vector<std::vector<char>> (screenHeight, std::vector<char>(screenWidth, -1));
 }
 
-void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, const char &objectIndex, const Shader &shader)
+void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, const char &objectIndex, const BaseShader &shader)
 {
     for (auto &point: triangle)
     {
@@ -120,7 +146,7 @@ void RenderManager::renderTriangle(std::vector<Vector3D<double>> &triangle, cons
     }
 }
 
-void RenderManager::renderShadowTriangle(std::vector<Vector3D<double> > &triangle, const int &bufferIndex, const Shader &shader)
+void RenderManager::renderShadowTriangle(std::vector<Vector3D<double> > &triangle, const int &bufferIndex, const SceneShader &shader)
 {
     for (auto &point: triangle)
     {
@@ -159,7 +185,7 @@ void RenderManager::renderShadowTriangle(std::vector<Vector3D<double> > &triangl
     }
 }
 
-void RenderManager::renderFrameBuffer(ThreadParams params, const std::vector<Vector3D<double> > &triangle, const char &objectIndex, const Shader &shader, const double &square)
+void RenderManager::renderFrameBuffer(ThreadParams params, const std::vector<Vector3D<double> > &triangle, const char &objectIndex, const BaseShader &shader, const double &square)
 {
     Vector3D<double> barCoords;
     double z;

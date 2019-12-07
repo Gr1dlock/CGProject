@@ -30,7 +30,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="modelTab">
      <attribute name="title">
@@ -55,7 +55,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="configurePage">
          <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -105,15 +105,15 @@
              <number>1</number>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="paramsPage">
              <property name="geometry">
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>318</width>
-               <height>202</height>
+               <width>328</width>
+               <height>399</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -294,7 +294,7 @@ p, li { white-space: pre-wrap; }
                      <number>1</number>
                     </property>
                     <property name="maximum">
-                     <double>500.000000000000000</double>
+                     <double>1000.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -401,7 +401,7 @@ p, li { white-space: pre-wrap; }
                      <number>1</number>
                     </property>
                     <property name="maximum">
-                     <double>500.000000000000000</double>
+                     <double>1000.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -513,7 +513,7 @@ p, li { white-space: pre-wrap; }
                    <double>1.000000000000000</double>
                   </property>
                   <property name="maximum">
-                   <double>500.000000000000000</double>
+                   <double>1000.000000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -620,7 +620,7 @@ p, li { white-space: pre-wrap; }
                    <number>3</number>
                   </property>
                   <property name="maximum">
-                   <number>15</number>
+                   <number>100</number>
                   </property>
                  </widget>
                 </item>
@@ -649,8 +649,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>324</width>
-               <height>214</height>
+               <width>328</width>
+               <height>399</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -1531,7 +1531,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>336</width>
-               <height>307</height>
+               <height>385</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -2206,10 +2206,10 @@ p, li { white-space: pre-wrap; }
                        <number>1</number>
                       </property>
                       <property name="minimum">
-                       <double>-5000.000000000000000</double>
+                       <double>-1000.000000000000000</double>
                       </property>
                       <property name="maximum">
-                       <double>5000.000000000000000</double>
+                       <double>1000.000000000000000</double>
                       </property>
                      </widget>
                     </item>
@@ -2290,10 +2290,10 @@ p, li { white-space: pre-wrap; }
                        <number>1</number>
                       </property>
                       <property name="minimum">
-                       <double>-5000.000000000000000</double>
+                       <double>-1000.000000000000000</double>
                       </property>
                       <property name="maximum">
-                       <double>5000.000000000000000</double>
+                       <double>1000.000000000000000</double>
                       </property>
                      </widget>
                     </item>
@@ -2374,10 +2374,10 @@ p, li { white-space: pre-wrap; }
                        <number>1</number>
                       </property>
                       <property name="minimum">
-                       <double>-5000.000000000000000</double>
+                       <double>-1000.000000000000000</double>
                       </property>
                       <property name="maximum">
-                       <double>5000.000000000000000</double>
+                       <double>1000.000000000000000</double>
                       </property>
                      </widget>
                     </item>
@@ -2720,7 +2720,7 @@ p, li { white-space: pre-wrap; }
                     <number>1</number>
                    </property>
                    <property name="maximum">
-                    <double>500.000000000000000</double>
+                    <double>1000.000000000000000</double>
                    </property>
                    <property name="value">
                     <double>100.000000000000000</double>
@@ -2826,7 +2826,7 @@ p, li { white-space: pre-wrap; }
                     <number>1</number>
                    </property>
                    <property name="maximum">
-                    <double>500.000000000000000</double>
+                    <double>1000.000000000000000</double>
                    </property>
                    <property name="value">
                     <double>100.000000000000000</double>
@@ -2937,7 +2937,7 @@ p, li { white-space: pre-wrap; }
                   <double>1.000000000000000</double>
                  </property>
                  <property name="maximum">
-                  <double>500.000000000000000</double>
+                  <double>1000.000000000000000</double>
                  </property>
                  <property name="value">
                   <double>100.000000000000000</double>
@@ -3043,7 +3043,7 @@ p, li { white-space: pre-wrap; }
                   <number>3</number>
                  </property>
                  <property name="maximum">
-                  <number>15</number>
+                  <number>100</number>
                  </property>
                 </widget>
                </item>

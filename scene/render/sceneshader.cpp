@@ -1,6 +1,6 @@
-#include "shader.h"
-#include <QtDebug>
-Shader::Shader()
+#include "sceneshader.h"
+
+SceneShader::SceneShader()
     : mvpMatrix_(4, 4),
       invVpMatrix_(4, 4),
       modelMatrix_(4, 4),
@@ -16,9 +16,9 @@ Shader::Shader()
                 {0, 0, -1, 1}};
 }
 
-Shader::Shader(const Matrix<double> &vpMatrix, const Matrix<double> &modelMatrix,
+SceneShader::SceneShader(const Matrix<double> &vpMatrix, const Matrix<double> &modelMatrix,
                const Vector3D<double> &cameraPosition, const Vector3D<double> &lightPosition)
-    : Shader()
+    : SceneShader()
 {
     mvpMatrix_ = modelMatrix * vpMatrix;
     modelMatrix_ = modelMatrix;
@@ -29,27 +29,27 @@ Shader::Shader(const Matrix<double> &vpMatrix, const Matrix<double> &modelMatrix
     lightPosition_ = lightPosition;
 }
 
-void Shader::setVpMatrix(const Matrix<double> &vpMatrix)
+void SceneShader::setVpMatrix(const Matrix<double> &vpMatrix)
 {
     vpMatrix_ = vpMatrix;
     invVpMatrix_ = vpMatrix;
     invVpMatrix_.inverse();
 }
 
-void Shader::setModelMatrix(const Matrix<double> &modelMatrix)
+void SceneShader::setModelMatrix(const Matrix<double> &modelMatrix)
 {
     modelMatrix_ = modelMatrix;
     mvpMatrix_ = modelMatrix_ * vpMatrix_;
 }
 
-void Shader::setMaterial(const Material &material)
+void SceneShader::setMaterial(const Material &material)
 {
     material_.diffuse_ = material.diffuse_;
     material_.specular_ = material.specular_;
     material_.shininess_ = material.shininess_;
 }
 
-int Shader::vertex(std::vector<Vector4D<double>> &result, const std::vector<Vector3D<double>> &triangle, const Vector3D<double> &normal)
+int SceneShader::vertex(std::vector<Vector4D<double>> &result, const std::vector<Vector3D<double>> &triangle, const Vector3D<double> &normal)
 {
     int count = 0;
     normal_ = normal * modelMatrix_;
@@ -73,7 +73,7 @@ int Shader::vertex(std::vector<Vector4D<double>> &result, const std::vector<Vect
     return count;
 }
 
-void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
+void SceneShader::geometry(const std::vector<Vector4D<double>> &triangle)
 {
     for (int i = 0; i < 3; i++)
     {
@@ -82,7 +82,7 @@ void Shader::geometry(const std::vector<Vector4D<double>> &triangle)
     }
 }
 
-Color Shader::fragment(const Vector3D<double> &barycentric, const ShadowCube &shadowCube) const
+Color SceneShader::fragment(const Vector3D<double> &barycentric, const ShadowCube &shadowCube) const
 {
     Vector3D<double> bar(barycentric);
     bar.setX(bar.x() * w_[0]);
@@ -109,7 +109,7 @@ Color Shader::fragment(const Vector3D<double> &barycentric, const ShadowCube &sh
     return material_.diffuse_ * ambient;
 }
 
-double Shader::countShadowDepth(Vector3D<double> &barycentric) const
+double SceneShader::countShadowDepth(Vector3D<double> &barycentric) const
 {
     barycentric.setX(barycentric.x() * w_[0]);
     barycentric.setY(barycentric.y() * w_[1]);
@@ -118,7 +118,7 @@ double Shader::countShadowDepth(Vector3D<double> &barycentric) const
     return (lightPosition_ - ((triangle_[0] * barycentric.x()  + triangle_[1] * barycentric.y() + triangle_[2] * barycentric.z()) * w)).module();
 }
 
-void Shader::findIntersection(Vector4D<double> &C, const Vector4D<double> &plane, const Vector4D<double> &A, const Vector4D<double> &B) const
+void SceneShader::findIntersection(Vector4D<double> &C, const Vector4D<double> &plane, const Vector4D<double> &A, const Vector4D<double> &B) const
 {
     double dA = plane * A;
     double dB = plane * B;
@@ -126,7 +126,7 @@ void Shader::findIntersection(Vector4D<double> &C, const Vector4D<double> &plane
     C = A + (B - A) * t;
 }
 
-int Shader::clipPolygon(std::vector<Vector4D<double>> &result, const std::vector<Vector4D<double>> &polygon, const Vector4D<double> &plane, const int &length) const
+int SceneShader::clipPolygon(std::vector<Vector4D<double>> &result, const std::vector<Vector4D<double>> &polygon, const Vector4D<double> &plane, const int &length) const
 {
     int first = length - 1;
     int second;

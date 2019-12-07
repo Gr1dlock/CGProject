@@ -28,8 +28,9 @@ SOURCES += \
     scene/camera/cameramanager.cpp \
     scene/model/basemodel.cpp \
     scene/model/modelmanager.cpp \
+    scene/render/lightshader.cpp \
     scene/render/rendermanager.cpp \
-    scene/render/shader.cpp \
+    scene/render/sceneshader.cpp \
     scene/render/shadowcube.cpp
 
 HEADERS += \
@@ -50,8 +51,9 @@ HEADERS += \
     scene/model/basemodel.h \
     scene/model/modelmanager.h \
     scene/render/baseshader.h \
+    scene/render/lightshader.h \
     scene/render/rendermanager.h \
-    scene/render/shader.h \
+    scene/render/sceneshader.h \
     scene/render/shadowcube.h \
     scene/scenecontainer.h
 
