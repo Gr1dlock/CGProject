@@ -33,6 +33,7 @@ public:
     void rotate(Camera &camera, const CameraRotation &rotation);
     void move(Camera &camera, const CameraMovement &movement);
     Matrix<double> getLookAt(const Camera &camera) const;
+    Matrix<double> getRotation(const Camera &camera) const;
     Matrix<double> getProjection(const Camera &camera) const;
 private:
     double speed_;

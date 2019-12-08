@@ -23,28 +23,19 @@ void RenderManager::renderModel(BaseShader &shader, const BaseModel &model, cons
     std::vector<Vector3D<double>> triangle(3);
     std::vector<Vector4D<double>> result(9);
     int count;
-//    double renderTime = 0;
-//    for (int k = 0; k < 100; k++)
-//    {
-//        clearFrame();
-//        auto time1 = std::chrono::steady_clock::now();
-        for (int j = 0; j < model.countTriangles(); j++)
+    for (int j = 0; j < model.countTriangles(); j++)
+    {
+        model.getTriangle(triangle, j);
+        count = shader.vertex(result, triangle, model.getNormal(j));
+        for (int i = 0; i < count - 2; i++)
         {
-            model.getTriangle(triangle, j);
-            count = shader.vertex(result, triangle, model.getNormal(j));
-            for (int i = 0; i < count - 2; i++)
-            {
-                shader.geometry({result[i+2], result[i+1], result[0]});
-                triangle[2] = result[0];
-                triangle[1] = result[i + 1];
-                triangle[0] = result[i + 2];
-                renderTriangle(triangle, objectIndex, shader);
-            }
+            shader.geometry({result[i+2], result[i+1], result[0]});
+            triangle[2] = result[0];
+            triangle[1] = result[i + 1];
+            triangle[0] = result[i + 2];
+            renderTriangle(triangle, objectIndex, shader);
         }
-//        auto time2 = std::chrono::steady_clock::now();
-//        renderTime += std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count() / 1000.0;
-//    }
-        //    qDebug() << "Render time: " << renderTime / 100;
+    }
 }
 
 void RenderManager::renderShadowModel(SceneShader &shader, const BaseModel &model, const int &bufferIndex)
@@ -67,8 +58,13 @@ void RenderManager::renderShadowModel(SceneShader &shader, const BaseModel &mode
     }
 }
 
-void RenderManager::renderCoordinateSystem(std::vector<Vector3D<double>> &system)
+void RenderManager::renderCoordinateSystem(const Matrix<double> &rotation)
 {
+    std::vector<Vector3D<double>> system {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    for (auto &element: system)
+    {
+        element = element * rotation;
+    }
     std::vector<QColor> colors{qRgb(26, 143, 17), qRgb(186, 19, 7), qRgb(11, 57, 143)};
     std::vector<char> letters{'X', 'Y', 'Z'};
     if (system[0].z() > system[1].z())
@@ -93,7 +89,7 @@ void RenderManager::renderCoordinateSystem(std::vector<Vector3D<double>> &system
     QFont font = painter.font();
     font.setPixelSize(18);
     painter.setFont(font);
-    QPoint center(110, screenHeight - 110);
+    QPoint center(110, screenHeight - 70);
     for (int i = 2; i >= 0; i--)
     {
         painter.setPen(QPen(colors[i], 5));

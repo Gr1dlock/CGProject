@@ -27,7 +27,7 @@ public:
     RenderManager(QImage *frame, const int &sc_width, const int &sc_height);
     void renderModel(BaseShader &shader, const BaseModel &model, const int &index);
     void renderShadowModel(SceneShader &shader, const BaseModel &model, const int &bufferIndex);
-    void renderCoordinateSystem(std::vector<Vector3D<double>> &system);
+    void renderCoordinateSystem(const Matrix<double> &rotation);
     inline int getIndexByPosition(const int &x, const int &y) const { return static_cast<int>(objectsBuffer[y][x]); }
     void clearFrame();
     inline void clearShadow() { shadowCube.clear(); }

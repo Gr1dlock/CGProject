@@ -30,7 +30,6 @@ private slots:
     void on_nearPlaneSpinBox_editingFinished();
     void on_farPlaneSpinBox_editingFinished();
     void on_fovSpinBox_editingFinished();
-    void on_speedSpinBox_editingFinished();
     void on_sensSpinBox_editingFinished();
     void on_createButton_clicked();
     void switchCreatePage();
