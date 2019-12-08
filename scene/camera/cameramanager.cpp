@@ -73,6 +73,22 @@ Matrix<double> CameraManager::getLookAt(const Camera &camera) const
     return translate * rotate;
 }
 
+Matrix<double> CameraManager::getRotation(const Camera &camera) const
+{
+    Matrix<double> rotate(4,4);
+    Vector3D<double> direction(camera.getDirection());
+    Vector3D<double> up(camera.getUp());
+    Vector3D<double> right(camera.getRight());
+    rotate[3][3] = 1;
+    for (int i = 0; i < 3; i++)
+    {
+        rotate[i][0] = right[i];
+        rotate[i][1] = up[i];
+        rotate[i][2] = direction[i];
+    }
+    return rotate;
+}
+
 Matrix<double> CameraManager::getProjection(const Camera &camera) const
 {
     ViewFrustrum frustrum = camera.getViewFrustrum();

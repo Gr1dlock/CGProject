@@ -108,11 +108,6 @@ void MainWindow::on_fovSpinBox_editingFinished()
     emit cameraParamChanged(change);
 }
 
-void MainWindow::on_speedSpinBox_editingFinished()
-{
-    renderWidget->setCameraSpeed(ui->speedSpinBox->value());
-}
-
 void MainWindow::on_sensSpinBox_editingFinished()
 {
     CameraChange change{CameraParam::SENSITIVITY, ui->sensSpinBox->value()};
