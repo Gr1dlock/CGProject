@@ -52,6 +52,9 @@ private slots:
     void on_lightXSpinBox_editingFinished();
     void on_lightYSpinBox_editingFinished();
     void on_lightZSpinBox_editingFinished();
+    void on_createSceneButton1_clicked();
+    void on_createSceneButton2_clicked();
+    void on_createSceneButton3_clicked();
 
 private:
     Ui::MainWindow *ui;

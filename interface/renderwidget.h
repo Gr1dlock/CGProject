@@ -18,6 +18,7 @@ class RenderWidget : public QWidget
     Q_OBJECT
 public:
     explicit RenderWidget(QWidget *parent = nullptr);
+    inline void setModel(const int &model) { currentModel = model; }
     void setCameraSpeed(const int &speed);
     int addModel(const ModelAttributes &attributes, const Material &material);
     void moveModel(const ModelMovement &movement);
